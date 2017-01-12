@@ -1,7 +1,4 @@
 export interface Schema {
-    // Lists?: IListInstance[];
-    // Files?: IFile[];
-
     Navigation?: INavigation;
     CustomActions?: ICustomAction[];
     ComposedLook?: IComposedLook;
