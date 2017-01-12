@@ -29,7 +29,7 @@ export class WebProvisioner {
 
         Logger.write(`Beginning processing of web [${this.web.toUrl()}]`, LogLevel.Info);
 
-        // keeping this broken allows for easier debugging of the incoming tasks + ordering
+        // keeping this broken out allows for easier debugging of the incoming tasks + ordering
         let operations = Object.getOwnPropertyNames(template).sort((name1: string, name2: string) => {
 
             let sort1 = this.handlerSort.hasOwnProperty(name1) ? this.handlerSort[name1] : 99;
