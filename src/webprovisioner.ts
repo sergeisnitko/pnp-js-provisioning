@@ -2,7 +2,7 @@
 import { Schema } from "./schema";
 import { HandlerBase } from "./handlers/handlerbase";
 import { TypedHash, Web, Logger, LogLevel } from "sp-pnp-js";
-import { DefaultHandlerMap } from "./handlers/exports";
+import { DefaultHandlerMap, DefaultHandlerSort } from "./handlers/exports";
 
 /**
  * Root class of Provisioning 
@@ -15,7 +15,10 @@ export class WebProvisioner {
      * @param web The Web instance to which we want to apply templates
      * @param handlermap A set of handlers we want to apply. The keys of the map need to match the property names in the template
      */
-    constructor(private web: Web, public handlerMap: TypedHash<HandlerBase> = DefaultHandlerMap) { }
+    constructor(
+        private web: Web,
+        public handlerMap: TypedHash<HandlerBase> = DefaultHandlerMap,
+        public handlerSort: TypedHash<number> = DefaultHandlerSort) { }
 
     /**
      * Applies the supplied template to the web used to create this Provisioner instance
@@ -26,30 +29,17 @@ export class WebProvisioner {
 
         Logger.write(`Beginning processing of web [${this.web.toUrl()}]`, LogLevel.Info);
 
-        return Object.getOwnPropertyNames(template).sort((name1: string, name2: string) => {
+        // keeping this broken allows for easier debugging of the incoming tasks + ordering
+        let operations = Object.getOwnPropertyNames(template).sort((name1: string, name2: string) => {
 
-            if (name1 === name2) {
+            let sort1 = this.handlerSort.hasOwnProperty(name1) ? this.handlerSort[name1] : 99;
+            let sort2 = this.handlerSort.hasOwnProperty(name2) ? this.handlerSort[name2] : 99;
 
-                return 0;
-            }
+            return sort1 - sort2;
+        });
 
-            return 0;
-
-
-            // this needs to be more complex and control the order of the elements
-            // things like site columns should be created before they may need added to a list, etc.
-            // so a sort function 
-
-            //  if (a is less than b by some ordering criterion) {
-            //     return -1;
-            //   }
-            //   if (a is greater than b by the ordering criterion) {
-            //     return 1;
-            //   }
-            //   // a must be equal to b
-            //   return 0;
-
-        }).reduce((chain, name) => {
+        // reduce those operations to a promise chain and return that. When this chain resolves the site is provisioned
+        return operations.reduce((chain, name) => {
 
             let handler = this.handlerMap[name];
 

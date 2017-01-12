@@ -15,3 +15,13 @@ export const DefaultHandlerMap: TypedHash<HandlerBase> = {
     Navigation: new Navigation(),
     WebSettings: new WebSettings(),
 };
+
+export const DefaultHandlerSort: TypedHash<number> = {
+
+    WebSettings: 1,
+    Features: 2,
+    Lists: 3,
+    Navigation: 4,
+    CustomActions: 5,
+    ComposedLook: 6
+}
