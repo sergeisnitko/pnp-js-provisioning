@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "target": "es2015",
+        "module": "commonjs",
+        "jsx": "react",
+        "declaration": false,
+        "sourceMap": true,
+        "removeComments": false,
+        "types": [],
+        "noImplicitAny": true,
+        "allowUnreachableCode": false,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "node",
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "pretty": true
+    },
+    "include": [
+        "src/**/*"
+    ]
+}
