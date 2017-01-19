@@ -18,10 +18,10 @@ export const DefaultHandlerMap: TypedHash<HandlerBase> = {
 
 export const DefaultHandlerSort: TypedHash<number> = {
 
-    WebSettings: 1,
+    ComposedLook: 6,
+    CustomActions: 5,
     Features: 2,
     Lists: 3,
     Navigation: 4,
-    CustomActions: 5,
-    ComposedLook: 6
-}
+    WebSettings: 1,
+};

@@ -39,7 +39,7 @@ export class Features extends HandlerBase {
 
             }).catch((e: Error) => {
 
-                super.scope_ended();   
+                super.scope_ended();
                 reject(e);
 
             });
