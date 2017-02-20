@@ -5,11 +5,18 @@ export interface Schema {
     WebSettings?: IWebSettings;
     Features?: IFeature[];
     Lists?: IList[];
+    Pages?: IPage[];
 
     [key: string]: any;
 }
 
 export default Schema;
+
+export interface IPage {
+    Folder: string;
+    Url: string;
+    Fields?: { [key: string]: string };
+}
 
 export interface IFeature {
     id: string;
