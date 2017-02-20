@@ -25,7 +25,7 @@ gulp.task("build:lib", () => {
     ]);
 });
 
-gulp.task("build:testing", () => {
+gulp.task("build:testing", ["clean"], () => {
 
     var projectSrc = tsc.createProject("tsconfig.json");
     var projectTests = tsc.createProject("tsconfig.json");
