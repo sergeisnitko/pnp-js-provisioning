@@ -21,7 +21,7 @@ gulp.task("_istanbul:hook", ["build:testing"], () => {
         .pipe(istanbul.hookRequire());
 });
 
-gulp.task("test", ["clean", "build:testing", "_istanbul:hook"], () => {
+gulp.task("test", ["_istanbul:hook"], () => {
 
     // when using single, grab only that test.js file - otherwise use the entire test.js glob
     let path = yargs.single ? './testing/tests/{path}.test.js'.replace('{path}', yargs.single) : config.testing.testingTestsDestGlob;
