@@ -6,7 +6,13 @@
         "declaration": false,
         "sourceMap": true,
         "removeComments": false,
-        "types": [],
+        "typeRoots": [
+            "./node_modules/@types"
+        ],
+        "types": [
+            "sharepoint",
+            "node"
+        ],
         "noImplicitAny": true,
         "allowUnreachableCode": false,
         "forceConsistentCasingInFileNames": true,

@@ -19,6 +19,16 @@ export interface IFile {
     Src: string;
     Url: string;
     Overwrite: boolean;
+    WebParts?: IWebPart[];
+}
+export interface IWebPart {
+    Title: string;
+    Zone: string;
+    Order: number;
+    Contents: IWebPartContents;
+}
+export interface IWebPartContents {
+    Xml: string;
 }
 export interface IComposedLook {
     ColorPaletteUrl: string;

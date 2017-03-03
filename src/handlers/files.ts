@@ -1,5 +1,5 @@
 import { HandlerBase } from "./handlerbase";
-import { IFile } from "../schema";
+import { IFile, IWebPart } from "../schema";
 import { Web, Util } from "sp-pnp-js";
 
 /**
@@ -44,12 +44,32 @@ export class Files extends HandlerBase {
                             type: "text/plain",
                         });
                         let folderServerRelativeUrl = Util.combinePaths("", serverRelativeUrl, file.Folder);
-                        web.getFolderByServerRelativeUrl(folderServerRelativeUrl).files.add(file.Url, blob, file.Overwrite).then(resolve, reject);
+                        web.getFolderByServerRelativeUrl(folderServerRelativeUrl).files.add(file.Url, blob, file.Overwrite).then(({ data }) => {
+                            this.processWebParts(web, file, serverRelativeUrl, data.ServerRelativeUrl).then(resolve, reject);
+                        }, reject);
                     });
                 });
             } else {
                 reject();
             }
+        });
+    }
+
+    private processWebParts(web: Web, file: IFile, webServerRelativeUrl: string, fileServerRelativeUrl: string) {
+        return new Promise((resolve, reject) => {
+            let ctx = new SP.ClientContext(webServerRelativeUrl),
+                spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
+                lwpm = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
+
+            file.WebParts.forEach(wp => {
+                let def = lwpm.importWebPart(wp.Contents.Xml),
+                    inst = def.get_webPart();
+                lwpm.addWebPart(inst, wp.Zone, wp.Order);
+                ctx.load(inst);
+            });
+            ctx.executeQueryAsync(() => {
+                resolve();
+            });
         });
     }
 }
