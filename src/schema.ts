@@ -20,6 +20,7 @@ export interface IFeature {
 
 export interface IFile {
     Folder: string;
+    Src: string;
     Url: string;
     Overwrite: boolean;
 }

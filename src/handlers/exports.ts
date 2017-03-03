@@ -6,6 +6,7 @@ import { Features } from "./features";
 import { WebSettings } from "./websettings";
 import { Navigation } from "./navigation";
 import { Lists } from "./lists";
+import { Files } from "./files";
 
 export const DefaultHandlerMap: TypedHash<HandlerBase> = {
     ComposedLook: new ComposedLook(),
@@ -14,14 +15,16 @@ export const DefaultHandlerMap: TypedHash<HandlerBase> = {
     Lists: new Lists(),
     Navigation: new Navigation(),
     WebSettings: new WebSettings(),
+    Files: new Files(),
 };
 
 export const DefaultHandlerSort: TypedHash<number> = {
 
     WebSettings: 1,
     Features: 2,
+    Files: 7,
     Lists: 3,
     Navigation: 4,
     CustomActions: 5,
-    ComposedLook: 6
+    ComposedLook: 6,
 }
