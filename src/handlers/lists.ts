@@ -44,19 +44,23 @@ export class Lists extends HandlerBase {
 
     private processContentTypeBindings(list: List, contentTypeBindings: IContentTypeBinding[]): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            contentTypeBindings.reduce((chain, ct) => chain.then(_ => this.processContentTypeBinding(list, ct)), Promise.resolve()).then(() => {
-                super.scope_ended();
+            if (contentTypeBindings) {
+                contentTypeBindings.reduce((chain, ct) => chain.then(_ => this.processContentTypeBinding(list, ct)), Promise.resolve()).then(() => {
+                    super.scope_ended();
+                    resolve();
+                }).catch(e => {
+                    super.scope_ended();
+                    reject(e);
+                });
+            } else {
                 resolve();
-            }).catch(e => {
-                super.scope_ended();
-                reject(e);
-            });
+            }
         });
     }
 
     private processContentTypeBinding(list: List, contentTypeBinding: IContentTypeBinding): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            list.contentTypes.addAvailableContentType(contentTypeBinding.Id).then(result => {
+            list.contentTypes.addAvailableContentType(contentTypeBinding.ContentTypeID).then(result => {
                 Logger.log({ data: result.contentType, level: LogLevel.Info, message: `Content Type added successfully.` });
                 resolve();
             }, reject);
