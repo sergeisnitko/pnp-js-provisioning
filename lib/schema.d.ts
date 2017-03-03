@@ -68,6 +68,7 @@ export interface IList {
     Description: string;
     Template: number;
     ContentTypesEnabled: boolean;
+    ContentTypeBindings?: IContentTypeBinding[];
     AdditionalSettings?: {
         ContentTypesEnabled?: boolean;
         DefaultContentApprovalWorkflowId?: string;
@@ -99,4 +100,8 @@ export interface IList {
         ValidationMessage?: string;
         [key: string]: string | boolean | number;
     };
+}
+export interface IContentTypeBinding {
+    Id: string;
+    Name: string;
 }

@@ -83,6 +83,7 @@ export interface IList {
     Description: string;
     Template: number;
     ContentTypesEnabled: boolean;
+    ContentTypeBindings?: IContentTypeBinding[];
 
     AdditionalSettings?: {
         ContentTypesEnabled?: boolean;
@@ -116,4 +117,9 @@ export interface IList {
 
         [key: string]: string | boolean | number;
     };
+}
+
+export interface IContentTypeBinding {
+    Id: string;
+    Name: string;
 }
