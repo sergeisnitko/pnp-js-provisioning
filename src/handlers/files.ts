@@ -39,12 +39,13 @@ export class Files extends HandlerBase {
         return new Promise((resolve, reject) => {
             if (Blob) {
                 fetch(file.Src, { credentials: "include", method: "GET" }).then(res => {
-                    console.log(res);
-                    let blob = new Blob(["This is my blob content"], {
-                        type: "text/plain",
+                    res.text().then(responseText => {
+                        let blob = new Blob([responseText], {
+                            type: "text/plain",
+                        });
+                        let folderServerRelativeUrl = Util.combinePaths("", serverRelativeUrl, file.Folder);
+                        web.getFolderByServerRelativeUrl(folderServerRelativeUrl).files.add(file.Url, blob, file.Overwrite).then(resolve, reject);
                     });
-                    let folderServerRelativeUrl = Util.combinePaths("", serverRelativeUrl, file.Folder);
-                    web.getFolderByServerRelativeUrl(folderServerRelativeUrl).files.add(file.Url, blob, file.Overwrite).then(resolve, reject);
                 });
             } else {
                 reject();
