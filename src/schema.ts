@@ -5,6 +5,7 @@ export interface Schema {
     WebSettings?: IWebSettings;
     Features?: IFeature[];
     Lists?: IList[];
+    Files?: IFile[];
 
     [key: string]: any;
 }
@@ -15,6 +16,12 @@ export interface IFeature {
     id: string;
     deactivate: boolean;
     force: boolean;
+}
+
+export interface IFile {
+    Folder: string;
+    Url: string;
+    Overwrite: boolean;
 }
 
 export interface IComposedLook {
