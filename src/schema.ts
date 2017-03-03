@@ -83,7 +83,7 @@ export interface IList {
     Description: string;
     Template: number;
     ContentTypesEnabled: boolean;
-    RemoveExistingContentTypes: boolean;
+    RemoveExistingContentTypes?: boolean;
     ContentTypeBindings?: IContentTypeBinding[];
 
     AdditionalSettings?: {
