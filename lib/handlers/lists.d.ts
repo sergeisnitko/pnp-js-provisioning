@@ -5,6 +5,8 @@ import { Web } from "sp-pnp-js";
  * Describes the Features Object Handler
  */
 export declare class Lists extends HandlerBase {
+    private lists;
+    private tokenRegex;
     /**
      * Creates a new instance of the ObjectFeatures class
      */
@@ -18,4 +20,7 @@ export declare class Lists extends HandlerBase {
     private processList(web, list);
     private processContentTypeBindings(list, contentTypeBindings);
     private processContentTypeBinding(list, contentTypeBinding);
+    private processFields(web, list);
+    private processField(web, list, fieldXml);
+    private replaceFieldXmlTokens(fieldXml);
 }

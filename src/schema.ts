@@ -86,6 +86,7 @@ export interface IList {
     ContentTypesEnabled: boolean;
     RemoveExistingContentTypes?: boolean;
     ContentTypeBindings?: IContentTypeBinding[];
+    Fields: string[];
 
     AdditionalSettings?: {
         ContentTypesEnabled?: boolean;
