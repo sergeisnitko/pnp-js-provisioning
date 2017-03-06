@@ -60,9 +60,13 @@ export class Files extends HandlerBase {
                 if (file.RemoveExistingWebParts) {
                     let ctx = new SP.ClientContext(webServerRelativeUrl),
                         spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
-                        lwpm = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
-                    lwpm.get_webParts().get_data().forEach(wp => wp.deleteWebPart());
-                    ctx.executeQueryAsync(_resolve, _reject);
+                        lwpm = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared),
+                        webParts = lwpm.get_webParts();
+                    ctx.load(webParts);
+                    ctx.executeQueryAsync(() => {
+                        webParts.get_data().forEach(wp => wp.deleteWebPart());
+                        ctx.executeQueryAsync(_resolve, _reject);
+                    }, _reject);
                 } else {
                     _resolve();
                 }
