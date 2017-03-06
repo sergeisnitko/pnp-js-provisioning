@@ -45,7 +45,7 @@ export class Files extends HandlerBase {
                         });
                         let folderServerRelativeUrl = Util.combinePaths("", serverRelativeUrl, file.Folder);
                         web.getFolderByServerRelativeUrl(folderServerRelativeUrl).files.add(file.Url, blob, file.Overwrite).then(({ data }) => {
-                            this.processWebParts(web, file, serverRelativeUrl, data.ServerRelativeUrl).then(resolve, reject);
+                            this.processWebParts(file, serverRelativeUrl, data.ServerRelativeUrl).then(resolve, reject);
                         }, reject);
                     });
                 });
@@ -55,21 +55,22 @@ export class Files extends HandlerBase {
         });
     }
 
-    private processWebParts(web: Web, file: IFile, webServerRelativeUrl: string, fileServerRelativeUrl: string) {
+    private processWebParts(file: IFile, webServerRelativeUrl: string, fileServerRelativeUrl: string) {
         return new Promise((resolve, reject) => {
-            let ctx = new SP.ClientContext(webServerRelativeUrl),
-                spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
-                lwpm = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
-
-            file.WebParts.forEach(wp => {
-                let def = lwpm.importWebPart(wp.Contents.Xml),
-                    inst = def.get_webPart();
-                lwpm.addWebPart(inst, wp.Zone, wp.Order);
-                ctx.load(inst);
-            });
-            ctx.executeQueryAsync(() => {
+            if (file.WebParts && file.WebParts.length > 0) {
+                let ctx = new SP.ClientContext(webServerRelativeUrl),
+                    spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
+                    lwpm = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
+                file.WebParts.forEach(wp => {
+                    let def = lwpm.importWebPart(wp.Contents.Xml),
+                        inst = def.get_webPart();
+                    lwpm.addWebPart(inst, wp.Zone, wp.Order);
+                    ctx.load(inst);
+                });
+                ctx.executeQueryAsync(resolve, reject);
+            } else {
                 resolve();
-            });
+            }
         });
     }
 }

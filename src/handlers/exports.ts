@@ -22,9 +22,9 @@ export const DefaultHandlerSort: TypedHash<number> = {
 
     WebSettings: 1,
     Features: 2,
-    Files: 7,
+    Files: 4,
     Lists: 3,
-    Navigation: 4,
+    Navigation: 7,
     CustomActions: 5,
     ComposedLook: 6,
 }

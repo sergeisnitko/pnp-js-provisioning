@@ -48,17 +48,32 @@ export class Navigation extends HandlerBase {
     }
 
     private processNavTree(target: NavigationNodes, nodes: INavigationNode[]): Promise<void> {
-
-        return nodes.reduce((chain, node) => chain.then(_ => this.processNode(target, node)), Promise.resolve());
+        return new Promise<void>((resolve, reject) => {
+            this.deleteExistingNodes(target).then(() => {
+                nodes.reduce((chain, node) => chain.then(_ => this.processNode(target, node)), Promise.resolve()).then(resolve, reject);
+            }, reject);
+        });
     }
 
     private processNode(target: NavigationNodes, node: INavigationNode): Promise<void> {
-
         return target.add(node.Title, node.Url).then(result => {
-
             if (Util.isArray(node.Children)) {
                 return this.processNavTree(result.node.children, node.Children);
             }
         });
+    }
+
+    private deleteExistingNodes(target: NavigationNodes) {
+        return new Promise<void>((resolve, reject) => {
+            target.get().then(existingNodes => {
+                existingNodes.reduce((chain: Promise<void>, n: any) => chain.then(_ => this.deleteNode(target, n.Id)), Promise.resolve()).then(() => {
+                    resolve();
+                }, reject);
+            });
+        });
+    }
+
+    private deleteNode(target: NavigationNodes, id: number): Promise<void> {
+        return target.getById(id).delete();
     }
 }

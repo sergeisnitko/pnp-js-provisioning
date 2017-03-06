@@ -17,4 +17,6 @@ export declare class Navigation extends HandlerBase {
     ProvisionObjects(web: Web, navigation: INavigation): Promise<void>;
     private processNavTree(target, nodes);
     private processNode(target, node);
+    private deleteExistingNodes(target);
+    private deleteNode(target, id);
 }
