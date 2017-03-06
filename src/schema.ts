@@ -23,6 +23,7 @@ export interface IFile {
     Src: string;
     Url: string;
     Overwrite: boolean;
+    RemoveExistingWebParts: boolean;
     WebParts?: IWebPart[];
 }
 

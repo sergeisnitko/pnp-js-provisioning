@@ -56,10 +56,14 @@ export class Navigation extends HandlerBase {
     }
 
     private processNode(target: NavigationNodes, node: INavigationNode): Promise<void> {
-        return target.add(node.Title, node.Url).then(result => {
-            if (Util.isArray(node.Children)) {
-                return this.processNavTree(result.node.children, node.Children);
-            }
+        return new Promise<void>((resolve, reject) => {
+            target.add(node.Title, node.Url).then(result => {
+                if (Util.isArray(node.Children)) {
+                    this.processNavTree(result.node.children, node.Children).then(resolve, reject);
+                } else {
+                    resolve();
+                }
+            }, reject);
         });
     }
 
@@ -74,6 +78,8 @@ export class Navigation extends HandlerBase {
     }
 
     private deleteNode(target: NavigationNodes, id: number): Promise<void> {
-        return target.getById(id).delete();
+        return new Promise<void>((resolve, reject) => {
+            target.getById(id).delete().then(resolve, reject);
+        });
     }
 }
