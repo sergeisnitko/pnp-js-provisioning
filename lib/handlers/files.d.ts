@@ -17,4 +17,5 @@ export declare class Files extends HandlerBase {
     ProvisionObjects(web: Web, files: IFile[]): Promise<void>;
     private processFile(web, file, serverRelativeUrl);
     private processWebParts(file, webServerRelativeUrl, fileServerRelativeUrl);
+    private replaceTokens(str, ctx);
 }

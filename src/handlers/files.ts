@@ -62,7 +62,7 @@ export class Files extends HandlerBase {
                     spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
                     lwpm = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
                 file.WebParts.forEach(wp => {
-                    let def = lwpm.importWebPart(wp.Contents.Xml),
+                    let def = lwpm.importWebPart(this.replaceTokens(wp.Contents.Xml, ctx)),
                         inst = def.get_webPart();
                     lwpm.addWebPart(inst, wp.Zone, wp.Order);
                     ctx.load(inst);
@@ -72,5 +72,10 @@ export class Files extends HandlerBase {
                 resolve();
             }
         });
+    }
+
+    private replaceTokens(str: string, ctx: SP.ClientContext): string {
+        return str
+            .replace(/{site}/, Util.combinePaths(document.location.protocol, "//", document.location.host, ctx.get_url()));
     }
 }
