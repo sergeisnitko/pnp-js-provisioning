@@ -80,7 +80,6 @@ export interface INavigationNode {
 }
 
 export interface IList {
-
     Title: string;
     Description: string;
     Template: number;
@@ -88,6 +87,7 @@ export interface IList {
     RemoveExistingContentTypes?: boolean;
     ContentTypeBindings?: IContentTypeBinding[];
     Fields?: string[];
+    Views?: IListView[];
 
     AdditionalSettings?: {
         ContentTypesEnabled?: boolean;
@@ -126,4 +126,13 @@ export interface IList {
 export interface IContentTypeBinding {
     ContentTypeID: string;
     Name?: string;
+}
+
+export interface IListView {
+    Title: string;
+    PersonalView?: boolean;
+    ViewFields?: string[];
+    AdditionalSettings?: {
+        ViewQuery: string;
+    };
 }

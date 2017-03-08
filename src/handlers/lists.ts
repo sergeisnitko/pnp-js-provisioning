@@ -1,5 +1,5 @@
 import { HandlerBase } from "./handlerbase";
-import { IList, IContentTypeBinding } from "../schema";
+import { IList, IContentTypeBinding, IListView } from "../schema";
 import { Web, List, Logger, LogLevel } from "sp-pnp-js";
 
 /**
@@ -43,11 +43,9 @@ export class Lists extends HandlerBase {
                 if (result.created) {
                     Logger.log({ data: result.list, level: LogLevel.Info, message: `List ${list.Title} created successfully.` });
                 }
-                Promise.all([
-                    this.processContentTypeBindings(result.list, list.ContentTypeBindings)
-                ]).then(() => {
-                    resolve();
-                }, reject);
+                this.processContentTypeBindings(result.list, list.ContentTypeBindings).then(_ => {
+                    this.processViews(result.list, list.Views).then(resolve, reject);
+                });
             });
         });
     }
@@ -87,6 +85,20 @@ export class Lists extends HandlerBase {
 
     private processField(web: Web, list: IList, fieldXml: string): Promise<any> {
         return web.lists.getByTitle(list.Title).fields.createFieldAsXml(this.replaceFieldXmlTokens(fieldXml));
+    }
+
+    private processViews(list: List, views: IListView[]): Promise<any> {
+        return new Promise<void>((resolve, reject) => {
+            views ? views.reduce((chain, view) => chain.then(_ => this.processView(list, view)), Promise.resolve()).then(resolve, reject) : resolve();
+        });
+    }
+
+    private processView(list: List, view: IListView): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            list.views.add(view.Title, view.PersonalView, view.AdditionalSettings).then(result => {
+                view.ViewFields.reduce((chain, viewField) => chain.then(_ => result.view.fields.add(viewField)), Promise.resolve()).then(resolve, reject);
+            }, reject);
+        });
     }
 
     private replaceFieldXmlTokens(fieldXml: string) {

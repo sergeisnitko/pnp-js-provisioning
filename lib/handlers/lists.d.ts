@@ -22,5 +22,7 @@ export declare class Lists extends HandlerBase {
     private processContentTypeBinding(list, contentTypeBinding);
     private processFields(web, list);
     private processField(web, list, fieldXml);
+    private processViews(list, views);
+    private processView(list, view);
     private replaceFieldXmlTokens(fieldXml);
 }
