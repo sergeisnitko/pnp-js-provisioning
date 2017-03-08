@@ -96,9 +96,12 @@ export class Lists extends HandlerBase {
     private processView(list: List, view: IListView): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             list.views.getByTitle(view.Title).get().then(_ => {
+                Logger.log({ level: LogLevel.Info, message: `View ${view.Title} already exists.` });
                 this.processViewFields(list.views.getByTitle(view.Title), view.ViewFields).then(resolve, reject);
             }, () => {
+                Logger.log({ level: LogLevel.Info, message: `View ${view.Title} does not exist.` });
                 list.views.add(view.Title, view.PersonalView, view.AdditionalSettings).then(result => {
+                    Logger.log({ data: result.view, level: LogLevel.Info, message: `View ${view.Title} created successfully.` });
                     this.processViewFields(result.view, view.ViewFields).then(resolve, reject);
                 }, reject);
             });
