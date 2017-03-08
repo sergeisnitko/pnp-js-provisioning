@@ -96,7 +96,9 @@ export class Lists extends HandlerBase {
     private processView(list: List, view: IListView): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             list.views.add(view.Title, view.PersonalView, view.AdditionalSettings).then(result => {
-                view.ViewFields.reduce((chain, viewField) => chain.then(_ => result.view.fields.add(viewField)), Promise.resolve()).then(resolve, reject);
+                result.view.fields.removeAll().then(() => {
+                    view.ViewFields.reduce((chain, viewField) => chain.then(_ => result.view.fields.add(viewField)), Promise.resolve()).then(resolve, reject);
+                }, reject);
             }, reject);
         });
     }
