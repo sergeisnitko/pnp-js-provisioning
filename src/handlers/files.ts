@@ -112,10 +112,13 @@ export class Files extends HandlerBase {
                 let listViewWebParts = webParts.filter(wp => wp.ListView);
                 if (listViewWebParts.length > 0) {
                     listViewWebParts
-                    .reduce((chain, wp) => chain.then(_ => this.processPageListView(web, wp.ListView, fileServerRelativeUrl)), Promise.resolve()).then(resolve, reject);
+                        .reduce((chain, wp) => chain.then(_ => this.processPageListView(web, wp.ListView, fileServerRelativeUrl)), Promise.resolve())
+                        .then(resolve, reject);
                 } else {
                     resolve();
                 }
+            } else {
+                resolve();
             }
         });
     }
