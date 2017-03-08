@@ -13,7 +13,7 @@
             "sharepoint",
             "node"
         ],
-        "noImplicitAny": true,
+        "noImplicitAny": false,
         "allowUnreachableCode": false,
         "forceConsistentCasingInFileNames": true,
         "moduleResolution": "node",
