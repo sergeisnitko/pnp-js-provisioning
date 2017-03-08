@@ -12,19 +12,19 @@ export const DefaultHandlerMap: TypedHash<HandlerBase> = {
     ComposedLook: new ComposedLook(),
     CustomActions: new CustomActions(),
     Features: new Features(),
+    Files: new Files(),
     Lists: new Lists(),
     Navigation: new Navigation(),
     WebSettings: new WebSettings(),
-    Files: new Files(),
 };
 
 export const DefaultHandlerSort: TypedHash<number> = {
-
-    WebSettings: 1,
+    ComposedLook: 6,
+    CustomActions: 5,
     Features: 2,
     Files: 4,
     Lists: 3,
     Navigation: 7,
-    CustomActions: 5,
-    ComposedLook: 6,
-}
+    WebSettings: 1,
+};
+

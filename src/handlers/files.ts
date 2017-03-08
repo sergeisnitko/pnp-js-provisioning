@@ -43,8 +43,8 @@ export class Files extends HandlerBase {
      * @param file The file
      * @param serverRelativeUrl ServerRelativeUrl for the web 
      */
-    private processFile(web: Web, file: IFile, serverRelativeUrl: string): Promise<any> {
-        return new Promise((resolve, reject) => {
+    private processFile(web: Web, file: IFile, serverRelativeUrl: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             fetch(file.Src, { credentials: "include", method: "GET" }).then(res => {
                 res.text().then(responseText => {
                     let blob = new Blob([responseText], {
@@ -55,7 +55,9 @@ export class Files extends HandlerBase {
                         Promise.all([
                             this.processWebParts(file, serverRelativeUrl, result.data.ServerRelativeUrl),
                             this.processProperties(web, result, file.Properties),
-                        ]).then(resolve, reject);
+                        ]).then(_ => {
+                            this.processPageListViews(web, file.WebParts, result.data.ServerRelativeUrl).then(resolve, reject);
+                        }, reject);
                     }, reject);
                 });
             });
@@ -101,6 +103,44 @@ export class Files extends HandlerBase {
                     resolve();
                 }
             }, reject);
+        });
+    }
+
+    private processPageListViews(web: Web, webParts: IWebPart[], fileServerRelativeUrl: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            if (webParts) {
+                let listViewWebParts = webParts.filter(wp => wp.ListView);
+                if (listViewWebParts.length > 0) {
+                    listViewWebParts
+                    .reduce((chain, wp) => chain.then(_ => this.processPageListView(web, wp.ListView, fileServerRelativeUrl)), Promise.resolve()).then(resolve, reject);
+                } else {
+                    resolve();
+                }
+            }
+        });
+    }
+
+    private processPageListView(web: Web, listView: { List: string, Title: string }, fileServerRelativeUrl: string) {
+        return new Promise<void>((resolve, reject) => {
+            let views = web.lists.getByTitle(listView.List).views;
+            views.expand("ViewFields").get().then(listViews => {
+                let wpView = listViews.filter(v => v.ServerRelativeUrl === fileServerRelativeUrl),
+                    selView = listViews.filter(v => v.Title === listView.Title);
+                if (wpView.length === 1 && selView.length === 1) {
+                    let { ViewQuery, RowLimit, ViewFields } = selView[0];
+                    let view = views.getById(wpView[0].Id);
+                    view.update({
+                        RowLimit: RowLimit,
+                        ViewQuery: ViewQuery,
+                    }).then(() => {
+                        view.fields.removeAll().then(_ => {
+                            ViewFields.Items.reduce((chain, viewField) => chain.then(() => view.fields.add(viewField)), Promise.resolve()).then(resolve, reject);
+                        }, reject);
+                    }, reject);
+                } else {
+                    resolve();
+                }
+            });
         });
     }
 

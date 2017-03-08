@@ -31,6 +31,8 @@ export declare class Files extends HandlerBase {
      * @param fileServerRelativeUrl ServerRelativeUrl for the file
      */
     private processWebParts(file, webServerRelativeUrl, fileServerRelativeUrl);
+    private processPageListViews(web, webParts, fileServerRelativeUrl);
+    private processPageListView(web, listView, fileServerRelativeUrl);
     /**
      * Process list item properties for the file
      *

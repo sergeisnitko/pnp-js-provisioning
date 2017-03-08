@@ -33,6 +33,10 @@ export interface IWebPart {
     Zone: string;
     Order: number;
     Contents: IWebPartContents;
+    ListView?: {
+        List: string;
+        Title: string;
+    };
 }
 
 export interface IWebPartContents {
@@ -133,7 +137,8 @@ export interface IListView {
     PersonalView?: boolean;
     ViewFields?: string[];
     AdditionalSettings?: {
-        ViewQuery: string;
-        RowLimit: number;
+        ViewQuery?: string;
+        RowLimit?: number;
+        Paged?: boolean;
     };
 }

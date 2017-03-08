@@ -108,7 +108,7 @@ export class Lists extends HandlerBase {
         });
     }
 
-    private processViewFields(view: any, viewFields: string[]) {
+    private processViewFields(view: any, viewFields: string[]): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             view.fields.removeAll().then(() => {
                 viewFields.reduce((chain, viewField) => chain.then(_ => view.fields.add(viewField)), Promise.resolve()).then(resolve, reject);

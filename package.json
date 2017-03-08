@@ -33,7 +33,7 @@
     "node-fetch": "^1.4.1",
     "ts-loader": "^1.2.2",
     "tslint": "^3.14.0",
-    "typescript": "^2.1.0",
+    "typescript": "2.2.0",
     "webpack": "^1.13.3",
     "yargs": "^6.0.0"
   },
