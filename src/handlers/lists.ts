@@ -95,10 +95,20 @@ export class Lists extends HandlerBase {
 
     private processView(list: List, view: IListView): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            list.views.add(view.Title, view.PersonalView, view.AdditionalSettings).then(result => {
-                result.view.fields.removeAll().then(() => {
-                    view.ViewFields.reduce((chain, viewField) => chain.then(_ => result.view.fields.add(viewField)), Promise.resolve()).then(resolve, reject);
+            list.views.getByTitle(view.Title).get().then(_ => {
+                this.processViewFields(list.views.getByTitle(view.Title), view.ViewFields).then(resolve, reject);
+            }, () => {
+                list.views.add(view.Title, view.PersonalView, view.AdditionalSettings).then(result => {
+                    this.processViewFields(result.view, view.ViewFields).then(resolve, reject);
                 }, reject);
+            });
+        });
+    }
+
+    private processViewFields(view: any, viewFields: string[]) {
+        return new Promise<void>((resolve, reject) => {
+            view.fields.removeAll().then(() => {
+                viewFields.reduce((chain, viewField) => chain.then(_ => view.fields.add(viewField)), Promise.resolve()).then(resolve, reject);
             }, reject);
         });
     }

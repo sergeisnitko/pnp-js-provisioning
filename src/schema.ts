@@ -134,5 +134,6 @@ export interface IListView {
     ViewFields?: string[];
     AdditionalSettings?: {
         ViewQuery: string;
+        RowLimit: number;
     };
 }
