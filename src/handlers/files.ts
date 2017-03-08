@@ -1,6 +1,6 @@
 import { HandlerBase } from "./handlerbase";
 import { IFile, IWebPart } from "../schema";
-import { Web, Util } from "sp-pnp-js";
+import { Web, Util, FileAddResult } from "sp-pnp-js";
 
 /**
  * Describes the Features Object Handler
@@ -19,9 +19,7 @@ export class Files extends HandlerBase {
      * @paramm files The files  to provision
      */
     public ProvisionObjects(web: Web, files: IFile[]): Promise<void> {
-
         super.scope_started();
-
         return new Promise<void>((resolve, reject) => {
             if (typeof window === "undefined") {
                 reject("Files Handler not supported in Node.");
@@ -38,6 +36,13 @@ export class Files extends HandlerBase {
         });
     }
 
+    /**
+     * Procceses a file
+     * 
+     * @param web The web
+     * @param file The file
+     * @param serverRelativeUrl ServerRelativeUrl for the web 
+     */
     private processFile(web: Web, file: IFile, serverRelativeUrl: string): Promise<any> {
         return new Promise((resolve, reject) => {
             fetch(file.Src, { credentials: "include", method: "GET" }).then(res => {
@@ -46,14 +51,24 @@ export class Files extends HandlerBase {
                         type: "text/plain",
                     });
                     let folderServerRelativeUrl = Util.combinePaths("", serverRelativeUrl, file.Folder);
-                    web.getFolderByServerRelativeUrl(folderServerRelativeUrl).files.add(file.Url, blob, file.Overwrite).then(({ data }) => {
-                        this.processWebParts(file, serverRelativeUrl, data.ServerRelativeUrl).then(resolve, reject);
+                    web.getFolderByServerRelativeUrl(folderServerRelativeUrl).files.add(file.Url, blob, file.Overwrite).then(result => {
+                        Promise.all([
+                            this.processWebParts(file, serverRelativeUrl, result.data.ServerRelativeUrl),
+                            this.processProperties(web, result, file.Properties),
+                        ]).then(resolve, reject);
                     }, reject);
                 });
             });
         });
     }
 
+    /**
+     * Processes web parts
+     * 
+     * @param file The file
+     * @param webServerRelativeUrl ServerRelativeUrl for the web 
+     * @param fileServerRelativeUrl ServerRelativeUrl for the file
+     */
     private processWebParts(file: IFile, webServerRelativeUrl: string, fileServerRelativeUrl: string) {
         return new Promise((resolve, reject) => {
             (new Promise((_resolve, _reject) => {
@@ -89,6 +104,31 @@ export class Files extends HandlerBase {
         });
     }
 
+    /**
+     * Process list item properties for the file
+     * 
+     * @param web The web
+     * @param result The file add result
+     * @param properties The properties to set
+     */
+    private processProperties(web: Web, result: FileAddResult, properties: { [key: string]: string | number }) {
+        return new Promise((resolve, reject) => {
+            if (properties && Object.keys(properties).length > 0) {
+                result.file.listItemAllFields.select("ID", "ParentList/ID").expand("ParentList").get().then(({ ID, ParentList }) => {
+                    web.lists.getById(ParentList.Id).items.getById(ID).update(properties).then(resolve, reject);
+                }, reject);
+            } else {
+                resolve();
+            }
+        });
+    }
+
+    /**
+     * Replaces tokens in a string, e.g. {site}
+     * 
+     * @param str The string
+     * @param ctx Client context
+     */
     private replaceTokens(str: string, ctx: SP.ClientContext): string {
         return str
             .replace(/{site}/, Util.combinePaths(document.location.protocol, "//", document.location.host, ctx.get_url()));

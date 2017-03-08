@@ -22,9 +22,10 @@ export interface IFile {
     Folder: string;
     Src: string;
     Url: string;
-    Overwrite: boolean;
-    RemoveExistingWebParts: boolean;
+    Overwrite?: boolean;
+    RemoveExistingWebParts?: boolean;
     WebParts?: IWebPart[];
+    Properties?: { [key: string]: string | number };
 }
 
 export interface IWebPart {
@@ -86,7 +87,7 @@ export interface IList {
     ContentTypesEnabled: boolean;
     RemoveExistingContentTypes?: boolean;
     ContentTypeBindings?: IContentTypeBinding[];
-    Fields: string[];
+    Fields?: string[];
 
     AdditionalSettings?: {
         ContentTypesEnabled?: boolean;

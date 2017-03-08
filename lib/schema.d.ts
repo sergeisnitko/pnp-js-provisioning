@@ -18,9 +18,12 @@ export interface IFile {
     Folder: string;
     Src: string;
     Url: string;
-    Overwrite: boolean;
-    RemoveExistingWebParts: boolean;
+    Overwrite?: boolean;
+    RemoveExistingWebParts?: boolean;
     WebParts?: IWebPart[];
+    Properties?: {
+        [key: string]: string | number;
+    };
 }
 export interface IWebPart {
     Title: string;
@@ -71,7 +74,7 @@ export interface IList {
     ContentTypesEnabled: boolean;
     RemoveExistingContentTypes?: boolean;
     ContentTypeBindings?: IContentTypeBinding[];
-    Fields: string[];
+    Fields?: string[];
     AdditionalSettings?: {
         ContentTypesEnabled?: boolean;
         DefaultContentApprovalWorkflowId?: string;
