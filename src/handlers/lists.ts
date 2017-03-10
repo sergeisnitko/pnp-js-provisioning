@@ -26,8 +26,10 @@ export class Lists extends HandlerBase {
         return new Promise<void>((resolve, reject) => {
             lists.reduce((chain, list) => chain.then(_ => this.processList(web, list)), Promise.resolve()).then(() => {
                 lists.reduce((chain, list) => chain.then(_ => this.processFields(web, list)), Promise.resolve()).then(() => {
-                    super.scope_ended();
-                    resolve();
+                    lists.reduce((chain, list) => chain.then(_ => this.processViews(web, list)), Promise.resolve()).then(() => {
+                        super.scope_ended();
+                        resolve();
+                    });
                 });
             }).catch(e => {
                 super.scope_ended();
@@ -43,9 +45,7 @@ export class Lists extends HandlerBase {
                 if (result.created) {
                     Logger.log({ data: result.list, level: LogLevel.Info, message: `List ${list.Title} created successfully.` });
                 }
-                this.processContentTypeBindings(result.list, list.ContentTypeBindings).then(_ => {
-                    this.processViews(result.list, list.Views).then(resolve, reject);
-                });
+                this.processContentTypeBindings(result.list, list.ContentTypeBindings).then(resolve, reject);
             });
         });
     }
@@ -87,21 +87,23 @@ export class Lists extends HandlerBase {
         return web.lists.getByTitle(list.Title).fields.createFieldAsXml(this.replaceFieldXmlTokens(fieldXml));
     }
 
-    private processViews(list: List, views: IListView[]): Promise<any> {
+    private processViews(web: Web, list: IList): Promise<any> {
         return new Promise<void>((resolve, reject) => {
-            views ? views.reduce((chain, view) => chain.then(_ => this.processView(list, view)), Promise.resolve()).then(resolve, reject) : resolve();
+            if (list.Views) {
+                list.Views.reduce((chain, view) => chain.then(_ => this.processView(web, list, view)), Promise.resolve()).then(resolve, reject);
+            } else {
+                resolve();
+            }
         });
     }
 
-    private processView(list: List, view: IListView): Promise<void> {
+    private processView(web: Web, list: IList, view: IListView): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            list.views.getByTitle(view.Title).get().then(_ => {
-                Logger.log({ level: LogLevel.Info, message: `View ${view.Title} already exists.` });
-                this.processViewFields(list.views.getByTitle(view.Title), view.ViewFields).then(resolve, reject);
+            let _view = web.lists.getByTitle(list.Title).views.getByTitle(view.Title);
+            _view.get().then(_ => {
+                this.processViewFields(_view, view.ViewFields).then(resolve, reject);
             }, () => {
-                Logger.log({ level: LogLevel.Info, message: `View ${view.Title} does not exist.` });
-                list.views.add(view.Title, view.PersonalView, view.AdditionalSettings).then(result => {
-                    Logger.log({ data: result.view, level: LogLevel.Info, message: `View ${view.Title} created successfully.` });
+                web.lists.getByTitle(list.Title).views.add(view.Title, view.PersonalView, view.AdditionalSettings).then(result => {
                     this.processViewFields(result.view, view.ViewFields).then(resolve, reject);
                 }, reject);
             });

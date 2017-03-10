@@ -173,7 +173,7 @@ export class Files extends HandlerBase {
      * @param ctx Client context
      */
     private replaceTokens(str: string, ctx: SP.ClientContext): string {
-        return str
-            .replace(/{site}/, Util.combinePaths(document.location.protocol, "//", document.location.host, ctx.get_url()));
+        let site = Util.combinePaths(document.location.protocol, "//", document.location.host, ctx.get_url());
+        return str.replace(/{site}/, site);
     }
 }
