@@ -47,5 +47,5 @@ export declare class Files extends HandlerBase {
      * @param str The string
      * @param ctx Client context
      */
-    private replaceTokens(str, ctx);
+    private replaceXmlTokens(str, ctx);
 }
