@@ -126,3 +126,9 @@ export interface IListView {
         Paged?: boolean;
     };
 }
+export interface IPropertyBagEntry {
+    Key: string;
+    Value: string;
+    Indexed?: boolean;
+    Overwrite?: boolean;
+}

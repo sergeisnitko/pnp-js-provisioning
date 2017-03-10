@@ -7,6 +7,8 @@ import { WebSettings } from "./websettings";
 import { Navigation } from "./navigation";
 import { Lists } from "./lists";
 import { Files } from "./files";
+import { PropertyBagEntries } from "./propertybagentries";
+
 
 export const DefaultHandlerMap: TypedHash<HandlerBase> = {
     ComposedLook: new ComposedLook(),
@@ -15,6 +17,7 @@ export const DefaultHandlerMap: TypedHash<HandlerBase> = {
     Files: new Files(),
     Lists: new Lists(),
     Navigation: new Navigation(),
+    PropertyBagEntries: new PropertyBagEntries(),
     WebSettings: new WebSettings(),
 };
 
@@ -25,6 +28,7 @@ export const DefaultHandlerSort: TypedHash<number> = {
     Files: 4,
     Lists: 3,
     Navigation: 7,
+    PropertyBagEntries: 8,
     WebSettings: 1,
 };
 
