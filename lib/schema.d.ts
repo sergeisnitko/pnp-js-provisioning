@@ -6,7 +6,7 @@ export interface Schema {
     Features?: IFeature[];
     Lists?: IList[];
     Files?: IFile[];
-    PropertyBagEntries: IPropertyBagEntry[];
+    PropertyBagEntries?: IPropertyBagEntry[];
     [key: string]: any;
 }
 export default Schema;
