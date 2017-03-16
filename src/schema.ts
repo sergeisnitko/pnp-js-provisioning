@@ -140,6 +140,7 @@ export interface IListView {
         ViewQuery?: string;
         RowLimit?: number;
         Paged?: boolean;
+        Hidden?: boolean;
     };
 }
 
