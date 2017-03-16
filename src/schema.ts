@@ -6,6 +6,7 @@ export interface Schema {
     Features?: IFeature[];
     Lists?: IList[];
     Pages?: IPage[];
+    PropertyBagEntries?: IPropertyBagEntry[];
 
     [key: string]: any;
 }
@@ -103,4 +104,11 @@ export interface IList {
 
         [key: string]: string | boolean | number;
     };
+}
+
+export interface IPropertyBagEntry {
+    Key: string;
+    Value: string;
+    Indexed?: boolean;
+    Overwrite?: boolean;
 }
