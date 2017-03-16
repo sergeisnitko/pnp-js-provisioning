@@ -42,7 +42,7 @@
 				"NODE_ENV": "development"
 			},
 			"console": "internalConsole",
-			"sourceMaps": false,
+			"sourceMaps": false
 		},
 		{
 			"name": "Attach",

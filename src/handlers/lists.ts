@@ -45,16 +45,33 @@ export class Lists extends HandlerBase {
                 if (result.created) {
                     Logger.log({ data: result.list, level: LogLevel.Info, message: `List ${list.Title} created successfully.` });
                 }
-                this.processContentTypeBindings(result.list, list.ContentTypeBindings).then(resolve, reject);
+                this.processContentTypeBindings(result.list, list.ContentTypeBindings, list.RemoveExistingContentTypes).then(resolve, reject);
             });
         });
     }
 
-    private processContentTypeBindings(list: List, contentTypeBindings: IContentTypeBinding[]): Promise<any> {
+    private processContentTypeBindings(list: List, contentTypeBindings: IContentTypeBinding[], removeExisting: boolean): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             if (contentTypeBindings) {
                 contentTypeBindings.reduce((chain, ct) => chain.then(_ => this.processContentTypeBinding(list, ct)), Promise.resolve()).then(() => {
-                    resolve();
+                    if (removeExisting) {
+                        if (typeof window === "undefined") {
+                            reject("Removal of existing content types not supported in Node.");
+                        } else {
+                            let promises = [];
+                            list.contentTypes.get().then(contentTypes => {
+                                contentTypes.forEach(({ Id: { StringValue } }) => {
+                                    let shouldRemove = (contentTypeBindings.filter(ctb => StringValue.indexOf(ctb.ContentTypeID) === -1).length > 0);
+                                    if (shouldRemove) {
+                                        promises.push(list.contentTypes.getById(StringValue).delete());
+                                    }
+                                });
+                            });
+                            Promise.all(promises).then(resolve, reject);
+                        }
+                    } else {
+                        resolve();
+                    }
                 }).catch(e => {
                     reject(e);
                 });

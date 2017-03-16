@@ -95,7 +95,6 @@ export interface IList {
     Views?: IListView[];
 
     AdditionalSettings?: {
-        ContentTypesEnabled?: boolean;
         DefaultContentApprovalWorkflowId?: string;
         DefaultDisplayFormUrl?: string;
         DefaultEditFormUrl?: string;

@@ -18,7 +18,7 @@ export declare class Lists extends HandlerBase {
      */
     ProvisionObjects(web: Web, lists: IList[]): Promise<void>;
     private processList(web, list);
-    private processContentTypeBindings(list, contentTypeBindings);
+    private processContentTypeBindings(list, contentTypeBindings, removeExisting);
     private processContentTypeBinding(list, contentTypeBinding);
     private processFields(web, list);
     private processField(web, list, fieldXml);
