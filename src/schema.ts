@@ -104,3 +104,28 @@ export interface IList {
         [key: string]: string | boolean | number;
     };
 }
+
+export interface IFile {
+    Folder: string;
+    Src: string;
+    Url: string;
+    Overwrite?: boolean;
+    RemoveExistingWebParts?: boolean;
+    WebParts?: IWebPart[];
+    Properties?: { [key: string]: string | number };
+}
+
+export interface IWebPart {
+    Title: string;
+    Zone: string;
+    Order: number;
+    Contents: IWebPartContents;
+    ListView?: {
+        List: string;
+        Title: string;
+    };
+}
+
+export interface IWebPartContents {
+    Xml: string;
+}
