@@ -23,24 +23,17 @@ export class Navigation extends HandlerBase {
         super.scope_started();
 
         return new Promise<void>((resolve, reject) => {
-
             let chain = Promise.resolve();
-
             if (Util.isArray(navigation.QuickLaunch)) {
                 chain.then(_ => this.processNavTree(web.navigation.quicklaunch, navigation.QuickLaunch));
             }
-
             if (Util.isArray(navigation.TopNavigationBar)) {
                 chain.then(_ => this.processNavTree(web.navigation.topNavigationBar, navigation.TopNavigationBar));
             }
-
             return chain.then(_ => {
-
                 super.scope_ended();
                 resolve();
-
             }).catch(e => {
-
                 super.scope_ended();
                 reject(e);
             });
