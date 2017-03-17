@@ -3,13 +3,13 @@ import { IList, IContentTypeBinding, IListView } from "../schema";
 import { Web, List, Logger, LogLevel } from "sp-pnp-js";
 
 /**
- * Describes the Features Object Handler
+ * Describes the Lists Object Handler
  */
 export class Lists extends HandlerBase {
     private lists: any[];
     private tokenRegex = /{[a-z]*:[ÆØÅæøåA-za-z]*}/g;
     /**
-     * Creates a new instance of the ObjectFeatures class
+     * Creates a new instance of the Lists class
      */
     constructor() {
         super("Lists");
@@ -19,7 +19,7 @@ export class Lists extends HandlerBase {
     /**
      * Provisioning lists
      * 
-     * @paramm features The features to provision
+     * @param lists The lists to provision
      */
     public ProvisionObjects(web: Web, lists: IList[]): Promise<void> {
         super.scope_started();
@@ -38,37 +38,48 @@ export class Lists extends HandlerBase {
         });
     }
 
-    private processList(web: Web, list: IList): Promise<void> {
+    /**
+     * Processes a list
+     * 
+     * @param web The web
+     * @param list The list
+     */
+    private processList(web: Web, conf: IList): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            web.lists.ensure(list.Title, list.Description, list.Template, list.ContentTypesEnabled, list.AdditionalSettings).then(result => {
-                this.lists.push(result.data);
-                if (result.created) {
-                    Logger.log({ data: result.list, level: LogLevel.Info, message: `List ${list.Title} created successfully.` });
+            web.lists.ensure(conf.Title, conf.Description, conf.Template, conf.ContentTypesEnabled, conf.AdditionalSettings).then(({ created, list, data }) => {
+                this.lists.push(data);
+                if (created) {
+                    Logger.log({ data: list, level: LogLevel.Info, message: `List ${conf.Title} created successfully.` });
                 }
-                this.processContentTypeBindings(result.list, list.ContentTypeBindings, list.RemoveExistingContentTypes).then(resolve, reject);
+                this.processContentTypeBindings(conf, list, conf.ContentTypeBindings, conf.RemoveExistingContentTypes).then(resolve, reject);
             });
         });
     }
 
-    private processContentTypeBindings(list: List, contentTypeBindings: IContentTypeBinding[], removeExisting: boolean): Promise<any> {
+    /**
+     * Processes content type bindings for a list
+     * 
+     * @param conf The list configuration
+     * @param list The pnp list
+     * @param contentTypeBindings Content type bindings 
+     * @param removeExisting Remove existing content type bindings
+     */
+    private processContentTypeBindings(conf: IList, list: List, contentTypeBindings: IContentTypeBinding[], removeExisting: boolean): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             if (contentTypeBindings) {
-                contentTypeBindings.reduce((chain, ct) => chain.then(_ => this.processContentTypeBinding(list, ct)), Promise.resolve()).then(() => {
+                contentTypeBindings.reduce((chain, ct) => chain.then(_ => this.processContentTypeBinding(conf, list, ct.ContentTypeID)), Promise.resolve()).then(() => {
                     if (removeExisting) {
-                        if (typeof window === "undefined") {
-                            reject("Removal of existing content types not supported in Node.");
-                        } else {
-                            let promises = [];
-                            list.contentTypes.get().then(contentTypes => {
-                                contentTypes.forEach(({ Id: { StringValue } }) => {
-                                    let shouldRemove = (contentTypeBindings.filter(ctb => StringValue.indexOf(ctb.ContentTypeID) === -1).length > 0);
-                                    if (shouldRemove) {
-                                        promises.push(list.contentTypes.getById(StringValue).delete());
-                                    }
-                                });
+                        let promises = [];
+                        list.contentTypes.get().then(contentTypes => {
+                            contentTypes.forEach(({ Id: { StringValue } }) => {
+                                let shouldRemove = (contentTypeBindings.filter(ctb => StringValue.indexOf(ctb.ContentTypeID) === -1).length > 0);
+                                if (shouldRemove) {
+                                    Logger.write(`Removing content type ${StringValue} from list ${conf.Title}`, LogLevel.Info);
+                                    promises.push(list.contentTypes.getById(StringValue).delete());
+                                }
                             });
-                            Promise.all(promises).then(resolve, reject);
-                        }
+                        });
+                        Promise.all(promises).then(resolve, reject);
                     } else {
                         resolve();
                     }
@@ -81,15 +92,29 @@ export class Lists extends HandlerBase {
         });
     }
 
-    private processContentTypeBinding(list: List, contentTypeBinding: IContentTypeBinding): Promise<any> {
+    /**
+     * Processes a content type binding for a list
+     * 
+     * @param conf The list configuration
+     * @param list The pnp list
+     * @param contentTypeID The Content Type ID  
+     */
+    private processContentTypeBinding(conf: IList, list: List, contentTypeID: string): Promise<any> {
         return new Promise<void>((resolve, reject) => {
-            list.contentTypes.addAvailableContentType(contentTypeBinding.ContentTypeID).then(result => {
-                Logger.log({ data: result.contentType, level: LogLevel.Info, message: `Content Type added successfully.` });
+            list.contentTypes.addAvailableContentType(contentTypeID).then(({ contentType }) => {
+                Logger.log({ data: contentType, level: LogLevel.Info, message: `Content Type ${contentTypeID} added successfully to list ${conf.Title}.` });
                 resolve();
             }, reject);
         });
     }
 
+
+    /**
+     * Processes fields for a list
+     * 
+     * @param web The web
+     * @param list The pnp list
+     */
     private processFields(web: Web, list: IList): Promise<any> {
         return new Promise<void>((resolve, reject) => {
             if (list.Fields) {
@@ -100,33 +125,61 @@ export class Lists extends HandlerBase {
         });
     }
 
-    private processField(web: Web, list: IList, fieldXml: string): Promise<any> {
-        return web.lists.getByTitle(list.Title).fields.createFieldAsXml(this.replaceFieldXmlTokens(fieldXml));
+    /**
+     * Processes a field for a lit
+     * 
+     * @param web The web
+     * @param conf The list configuration
+     * @param fieldXml Field xml
+     */
+    private processField(web: Web, conf: IList, fieldXml: string): Promise<any> {
+        return web.lists.getByTitle(conf.Title).fields.createFieldAsXml(this.replaceFieldXmlTokens(fieldXml)).then(({ data }) => {
+            Logger.log({ data: data, level: LogLevel.Info, message: `Field added successfully to list ${conf.Title}.` });
+        });
     }
 
-    private processViews(web: Web, list: IList): Promise<any> {
+    /**
+     * Processes views for a list
+     * 
+     * @param web The web
+     * @param conf The view configuration
+     */
+    private processViews(web: Web, conf: IList): Promise<any> {
         return new Promise<void>((resolve, reject) => {
-            if (list.Views) {
-                list.Views.reduce((chain, view) => chain.then(_ => this.processView(web, list, view)), Promise.resolve()).then(resolve, reject);
+            if (conf.Views) {
+                conf.Views.reduce((chain, view) => chain.then(_ => this.processView(web, conf, view)), Promise.resolve()).then(resolve, reject);
             } else {
                 resolve();
             }
         });
     }
 
-    private processView(web: Web, list: IList, view: IListView): Promise<void> {
+    /**
+     * Processes a view for a list
+     * 
+     * @param web The web
+     * @param conf List configuration
+     * @param view The view configuration
+     */
+    private processView(web: Web, conf: IList, view: IListView): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            let _view = web.lists.getByTitle(list.Title).views.getByTitle(view.Title);
+            let _view = web.lists.getByTitle(conf.Title).views.getByTitle(view.Title);
             _view.get().then(_ => {
                 this.processViewFields(_view, view.ViewFields).then(resolve, reject);
             }, () => {
-                web.lists.getByTitle(list.Title).views.add(view.Title, view.PersonalView, view.AdditionalSettings).then(result => {
+                web.lists.getByTitle(conf.Title).views.add(view.Title, view.PersonalView, view.AdditionalSettings).then(result => {
                     this.processViewFields(result.view, view.ViewFields).then(resolve, reject);
                 }, reject);
             });
         });
     }
 
+    /**
+     * Processes view fields for a view
+     * 
+     * @param view The pnp view
+     * @param viewFields Array of view fields
+     */
     private processViewFields(view: any, viewFields: string[]): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             view.fields.removeAll().then(() => {
@@ -135,6 +188,11 @@ export class Lists extends HandlerBase {
         });
     }
 
+    /**
+     * Replaces tokens in field xml
+     * 
+     * @param fieldXml The field xml
+     */
     private replaceFieldXmlTokens(fieldXml: string) {
         let m;
         while ((m = this.tokenRegex.exec(fieldXml)) !== null) {

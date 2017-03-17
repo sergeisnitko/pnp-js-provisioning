@@ -1,6 +1,6 @@
 import { HandlerBase } from "./handlerbase";
 import { IPropertyBagEntry } from "../schema";
-import { Web } from "sp-pnp-js";
+import { Web, Logger, LogLevel } from "sp-pnp-js";
 
 /**
  * Describes the PropertyBagEntries Object Handler
@@ -22,7 +22,8 @@ export class PropertyBagEntries extends HandlerBase {
         super.scope_started();
         return new Promise<any>((resolve, reject) => {
             if (typeof window === "undefined") {
-                reject("PropertyBagEntries Handler not supported in Node.");
+                Logger.write("PropertyBagEntries Handler not supported in Node.", LogLevel.Error);
+                reject();
             }
             web.get().then(({ ServerRelativeUrl }) => {
                 let ctx = new SP.ClientContext(ServerRelativeUrl),

@@ -2,28 +2,86 @@ import { HandlerBase } from "./handlerbase";
 import { IList } from "../schema";
 import { Web } from "sp-pnp-js";
 /**
- * Describes the Features Object Handler
+ * Describes the Lists Object Handler
  */
 export declare class Lists extends HandlerBase {
     private lists;
     private tokenRegex;
     /**
-     * Creates a new instance of the ObjectFeatures class
+     * Creates a new instance of the Lists class
      */
     constructor();
     /**
      * Provisioning lists
      *
-     * @paramm features The features to provision
+     * @param lists The lists to provision
      */
     ProvisionObjects(web: Web, lists: IList[]): Promise<void>;
-    private processList(web, list);
-    private processContentTypeBindings(list, contentTypeBindings, removeExisting);
-    private processContentTypeBinding(list, contentTypeBinding);
+    /**
+     * Processes a list
+     *
+     * @param web The web
+     * @param list The list
+     */
+    private processList(web, conf);
+    /**
+     * Processes content type bindings for a list
+     *
+     * @param conf The list configuration
+     * @param list The pnp list
+     * @param contentTypeBindings Content type bindings
+     * @param removeExisting Remove existing content type bindings
+     */
+    private processContentTypeBindings(conf, list, contentTypeBindings, removeExisting);
+    /**
+     * Processes a content type binding for a list
+     *
+     * @param conf The list configuration
+     * @param list The pnp list
+     * @param contentTypeID The Content Type ID
+     */
+    private processContentTypeBinding(conf, list, contentTypeID);
+    /**
+     * Processes fields for a list
+     *
+     * @param web The web
+     * @param list The pnp list
+     */
     private processFields(web, list);
-    private processField(web, list, fieldXml);
-    private processViews(web, list);
-    private processView(web, list, view);
+    /**
+     * Processes a field for a lit
+     *
+     * @param web The web
+     * @param conf The list configuration
+     * @param fieldXml Field xml
+     */
+    private processField(web, conf, fieldXml);
+    /**
+     * Processes views for a list
+     *
+     * @param web The web
+     * @param conf The view configuration
+     */
+    private processViews(web, conf);
+    /**
+     * Processes a view for a list
+     *
+     * @param web The web
+     * @param conf List configuration
+     * @param view The view configuration
+     */
+    private processView(web, conf, view);
+    /**
+     * Processes view fields for a view
+     *
+     * @param view The pnp view
+     * @param viewFields Array of view fields
+     */
     private processViewFields(view, viewFields);
+    /**
+     * Replaces tokens in field xml
+     *
+     * @param fieldXml The field xml
+     */
     private replaceFieldXmlTokens(fieldXml);
 }
