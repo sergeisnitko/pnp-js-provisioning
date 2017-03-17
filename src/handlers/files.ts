@@ -1,6 +1,7 @@
 import { HandlerBase } from "./handlerbase";
 import { IFile, IWebPart } from "../schema";
 import { Web, Util, FileAddResult } from "sp-pnp-js";
+import { ReplaceTokens } from "../util";
 
 /**
  * Describes the Features Object Handler
@@ -45,7 +46,7 @@ export class Files extends HandlerBase {
      */
     private processFile(web: Web, file: IFile, serverRelativeUrl: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            fetch(file.Src, { credentials: "include", method: "GET" }).then(res => {
+            fetch(ReplaceTokens(file.Src), { credentials: "include", method: "GET" }).then(res => {
                 res.text().then(responseText => {
                     let blob = new Blob([responseText], {
                         type: "text/plain",
