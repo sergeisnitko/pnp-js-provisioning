@@ -168,6 +168,7 @@ export class Lists extends HandlerBase {
                 this.processViewFields(_view, view.ViewFields).then(resolve, reject);
             }, () => {
                 web.lists.getByTitle(conf.Title).views.add(view.Title, view.PersonalView, view.AdditionalSettings).then(result => {
+                    Logger.log({ data: result.data, level: LogLevel.Info, message: `View ${view.Title} added successfully to list ${conf.Title}.` });
                     this.processViewFields(result.view, view.ViewFields).then(resolve, reject);
                 }, reject);
             });
