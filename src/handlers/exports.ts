@@ -24,6 +24,6 @@ export const DefaultHandlerSort: TypedHash<number> = {
     Features: 2,
     Lists: 3,
     Navigation: 4,
-    Pages: 7
+    Pages: 7,
     WebSettings: 1,
 };
