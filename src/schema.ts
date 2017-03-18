@@ -6,6 +6,7 @@ export interface Schema {
     Features?: IFeature[];
     Lists?: IList[];
     Pages?: IPage[];
+    PropertyBagEntries?: IPropertyBagEntry[];
 
     [key: string]: any;
 }
@@ -107,6 +108,13 @@ export interface IList {
     };
 }
 
+
+export interface IPropertyBagEntry {
+    Key: string;
+    Value: string;
+    Indexed?: boolean;
+    Overwrite?: boolean;
+
 export interface IContentTypeBinding {
     ContentTypeID: string;
     Name?: string;
@@ -122,6 +130,7 @@ export interface IListView {
         Paged?: boolean;
     };
 }
+
 export interface IFile {
     Folder: string;
     Src: string;
