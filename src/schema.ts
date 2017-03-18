@@ -65,14 +65,16 @@ export interface INavigationNode {
 }
 
 export interface IList {
-
     Title: string;
     Description: string;
     Template: number;
     ContentTypesEnabled: boolean;
+    RemoveExistingContentTypes?: boolean;
+    ContentTypeBindings?: IContentTypeBinding[];
+    Fields?: string[];
+    Views?: IListView[];
 
     AdditionalSettings?: {
-        ContentTypesEnabled?: boolean;
         DefaultContentApprovalWorkflowId?: string;
         DefaultDisplayFormUrl?: string;
         DefaultEditFormUrl?: string;
@@ -105,6 +107,21 @@ export interface IList {
     };
 }
 
+export interface IContentTypeBinding {
+    ContentTypeID: string;
+    Name?: string;
+}
+
+export interface IListView {
+    Title: string;
+    PersonalView?: boolean;
+    ViewFields?: string[];
+    AdditionalSettings?: {
+        ViewQuery?: string;
+        RowLimit?: number;
+        Paged?: boolean;
+    };
+}
 export interface IFile {
     Folder: string;
     Src: string;
