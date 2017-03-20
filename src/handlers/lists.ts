@@ -140,8 +140,8 @@ export class Lists extends HandlerBase {
                 { InternalName, DisplayName } = fieldProps.elements[0].attributes;
             fieldProps.elements[0].attributes.DisplayName = InternalName;
             web.lists.getByTitle(conf.Title).fields.createFieldAsXml(this.replaceFieldXmlTokens(xmljs.json2xml(fieldProps))).then(({ data, field }) => {
-                field.update({ DisplayName: DisplayName }).then(() => {
-                    Logger.log({ data: data, level: LogLevel.Info, message: `Field added successfully to list ${conf.Title}.` });
+                field.update({ Title: DisplayName }).then(() => {
+                    Logger.log({ data: data, level: LogLevel.Info, message: `Field '${DisplayName}' added successfully to list ${conf.Title}.` });
                     resolve();
                 }, reject);
             });
