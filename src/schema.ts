@@ -36,7 +36,7 @@ export interface IWebPart {
     Contents: IWebPartContents;
     ListView?: {
         List: string;
-        Title: string;
+        View: IListView;
     };
 }
 

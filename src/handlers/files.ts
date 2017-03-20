@@ -1,5 +1,5 @@
 import { HandlerBase } from "./handlerbase";
-import { IFile, IWebPart } from "../schema";
+import { IFile, IWebPart, IListView } from "../schema";
 import { Web, Util, FileAddResult } from "sp-pnp-js";
 import { ReplaceTokens } from "../util";
 
@@ -124,21 +124,17 @@ export class Files extends HandlerBase {
         });
     }
 
-    private processPageListView(web: Web, listView: { List: string, Title: string }, fileServerRelativeUrl: string) {
+    private processPageListView(web: Web, listView: { List: string, View: IListView }, fileServerRelativeUrl: string) {
         return new Promise<void>((resolve, reject) => {
             let views = web.lists.getByTitle(listView.List).views;
-            views.expand("ViewFields").get().then(listViews => {
-                let wpView = listViews.filter(v => v.ServerRelativeUrl === fileServerRelativeUrl),
-                    selView = listViews.filter(v => v.Title === listView.Title);
-                if (wpView.length === 1 && selView.length === 1) {
-                    let { ViewQuery, RowLimit, ViewFields } = selView[0];
+            views.get().then(listViews => {
+                let wpView = listViews.filter(v => v.ServerRelativeUrl === fileServerRelativeUrl);
+                if (wpView.length === 1) {
                     let view = views.getById(wpView[0].Id);
-                    view.update({
-                        RowLimit: RowLimit,
-                        ViewQuery: ViewQuery,
-                    }).then(() => {
+                    let settings = listView.View.AdditionalSettings || {};
+                    view.update(settings).then(() => {
                         view.fields.removeAll().then(_ => {
-                            ViewFields.Items.reduce((chain, viewField) => chain.then(() => view.fields.add(viewField)), Promise.resolve()).then(resolve, reject);
+                            listView.View.ViewFields.reduce((chain, viewField) => chain.then(() => view.fields.add(viewField)), Promise.resolve()).then(resolve, reject);
                         }, reject);
                     }, reject);
                 } else {
