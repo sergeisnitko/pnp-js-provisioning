@@ -5,7 +5,8 @@
   "main": "./lib/provisioning.js",
   "typings": "./lib/provisioning",
   "dependencies": {
-    "sp-pnp-js": "file:///C:\\code\\PnP-JS-Core"
+    "sp-pnp-js": "file:///C:\\code\\PnP-JS-Core",
+    "xml-js": "^1.0.2"
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",

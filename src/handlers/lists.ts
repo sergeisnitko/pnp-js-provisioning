@@ -1,3 +1,4 @@
+import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
 import { IList, IContentTypeBinding, IListView } from "../schema";
 import { Web, List, Logger, LogLevel } from "sp-pnp-js";
@@ -134,8 +135,16 @@ export class Lists extends HandlerBase {
      * @param fieldXml Field xml
      */
     private processField(web: Web, conf: IList, fieldXml: string): Promise<any> {
-        return web.lists.getByTitle(conf.Title).fields.createFieldAsXml(this.replaceFieldXmlTokens(fieldXml)).then(({ data }) => {
-            Logger.log({ data: data, level: LogLevel.Info, message: `Field added successfully to list ${conf.Title}.` });
+        return new Promise<void>((resolve, reject) => {
+            let fieldProps = JSON.parse(xmljs.xml2json(fieldXml)),
+                { InternalName, DisplayName } = fieldProps.elements[0].attributes;
+            fieldProps.elements[0].attributes.DisplayName = InternalName;
+            web.lists.getByTitle(conf.Title).fields.createFieldAsXml(this.replaceFieldXmlTokens(xmljs.json2xml(fieldProps))).then(({ data, field }) => {
+                field.update({ DisplayName: DisplayName }).then(() => {
+                    Logger.log({ data: data, level: LogLevel.Info, message: `Field added successfully to list ${conf.Title}.` });
+                    resolve();
+                }, reject);
+            });
         });
     }
 
