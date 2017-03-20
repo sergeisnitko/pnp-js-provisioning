@@ -71,11 +71,12 @@ export class Lists extends HandlerBase {
                     if (removeExisting) {
                         let promises = [];
                         list.contentTypes.get().then(contentTypes => {
-                            contentTypes.forEach(({ Id }) => {
-                                let shouldRemove = (contentTypeBindings.filter(ctb => Id.StringValue.indexOf(ctb.ContentTypeID) !== -1).length === 0);
+                            contentTypes.forEach(({ Id: { StringValue: ContentTypeId } }) => {
+                                let shouldRemove = (contentTypeBindings.filter(ctb => ContentTypeId.indexOf(ctb.ContentTypeID) !== -1).length === 0)
+                                    && (ContentTypeId.indexOf("0x0120") === -1);
                                 if (shouldRemove) {
-                                    Logger.write(`Removing content type ${Id.StringValue} from list ${conf.Title}`, LogLevel.Info);
-                                    promises.push(list.contentTypes.getById(Id.StringValue).delete());
+                                    Logger.write(`Removing content type ${ContentTypeId} from list ${conf.Title}`, LogLevel.Info);
+                                    promises.push(list.contentTypes.getById(ContentTypeId).delete());
                                 }
                             });
                         });
