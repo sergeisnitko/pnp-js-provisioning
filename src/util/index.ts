@@ -1,6 +1,9 @@
 const ReplaceTokens = (str: string): string => {
-    return str
-        .replace(/{sitecollection}/g, _spPageContextInfo.siteAbsoluteUrl);
+    return str.replace(/{sitecollection}/g, _spPageContextInfo.siteAbsoluteUrl);
 };
 
-export { ReplaceTokens };
+const MakeUrlRelative = (absUrl: string): string => {
+    return absUrl.replace(`${document.location.protocol}//${document.location.hostname}`, "");
+}
+
+export { ReplaceTokens, MakeUrlRelative };
