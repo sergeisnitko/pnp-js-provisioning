@@ -5,6 +5,7 @@
   "main": "./lib/provisioning.js",
   "typings": "./lib/provisioning",
   "dependencies": {
+    "object.omit": "^2.0.1",
     "sp-pnp-js": "file:///C:\\code\\PnP-JS-Core",
     "xml-js": "^1.0.2"
   },

@@ -1,23 +1,25 @@
 import { HandlerBase } from "./handlerbase";
 import { IWebSettings } from "../schema";
 import { Web } from "sp-pnp-js";
+import * as omit from "object.omit";
 import { ReplaceTokens } from "../util";
 
 /**
- * Describes the Features Object Handler
+ * Describes the WebSettings Object Handler
  */
 export class WebSettings extends HandlerBase {
     /**
-     * Creates a new instance of the ObjectFeatures class
+     * Creates a new instance of the WebSettings class
      */
     constructor() {
         super("WebSettings");
     }
 
     /**
-     * Provisioning features
+     * Provisioning WebSettings
      * 
-     * @paramm features The features to provision
+     * @param web The web
+     * @param settings The settings
      */
     public ProvisionObjects(web: Web, settings: IWebSettings): Promise<void> {
         super.scope_started();
@@ -28,7 +30,10 @@ export class WebSettings extends HandlerBase {
                     let value: string = <any>settings[key];
                     settings[key] = ReplaceTokens(value);
                 });
-            web.update(settings).then(_ => {
+            Promise.all([
+                web.rootFolder.update({ WelcomePage: settings.WelcomePage }),
+                web.update(omit(settings, "WelcomePage")),
+            ]).then(_ => {
                 super.scope_ended();
                 resolve();
             }).catch(e => reject(e));
