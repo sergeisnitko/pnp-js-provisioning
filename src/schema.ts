@@ -81,6 +81,7 @@ export interface INavigation {
 export interface INavigationNode {
     Title: string;
     Url: string;
+    IgnoreExisting?: boolean;
     Children?: INavigationNode[];
 }
 

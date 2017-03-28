@@ -54,7 +54,7 @@ export class Navigation extends HandlerBase {
     private processNode(target: NavigationNodes, node: INavigationNode, existingNodes: any[]): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             let existingNode = existingNodes.filter(n => n.Title === node.Title);
-            if (existingNode.length === 1) {
+            if (existingNode.length === 1 && node.IgnoreExisting !== true) {
                 node.Url = existingNode[0].Url;
             }
             target.add(node.Title, ReplaceTokens(node.Url)).then(result => {
