@@ -24,6 +24,14 @@ export declare class Files extends HandlerBase {
      */
     private processFile(web, file, serverRelativeUrl);
     /**
+     * Remove exisiting webparts if specified
+     *
+     * @param webServerRelativeUrl ServerRelativeUrl for the web
+     * @param fileServerRelativeUrl ServerRelativeUrl for the file
+     * @param shouldRemove Should web parts be removed
+     */
+    private removeExistingWebParts(webServerRelativeUrl, fileServerRelativeUrl, shouldRemove);
+    /**
      * Processes web parts
      *
      * @param file The file
