@@ -66,6 +66,31 @@ export class Files extends HandlerBase {
     }
 
     /**
+     * Remove exisiting webparts if specified
+     * 
+     * @param webServerRelativeUrl ServerRelativeUrl for the web 
+     * @param fileServerRelativeUrl ServerRelativeUrl for the file
+     * @param shouldRemove Should web parts be removed
+     */
+    private removeExistingWebParts(webServerRelativeUrl: string, fileServerRelativeUrl: string, shouldRemove: boolean) {
+        return new Promise((resolve, reject) => {
+            if (shouldRemove) {
+                let ctx = new SP.ClientContext(webServerRelativeUrl),
+                    spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
+                    lwpm = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared),
+                    webParts = lwpm.get_webParts();
+                ctx.load(webParts);
+                ctx.executeQueryAsync(() => {
+                    webParts.get_data().forEach(wp => wp.deleteWebPart());
+                    ctx.executeQueryAsync(resolve, reject);
+                }, reject);
+            } else {
+                resolve();
+            }
+        });
+    }
+
+    /**
      * Processes web parts
      * 
      * @param file The file
@@ -74,21 +99,7 @@ export class Files extends HandlerBase {
      */
     private processWebParts(file: IFile, webServerRelativeUrl: string, fileServerRelativeUrl: string) {
         return new Promise((resolve, reject) => {
-            (new Promise((_resolve, _reject) => {
-                if (file.RemoveExistingWebParts) {
-                    let ctx = new SP.ClientContext(webServerRelativeUrl),
-                        spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
-                        lwpm = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared),
-                        webParts = lwpm.get_webParts();
-                    ctx.load(webParts);
-                    ctx.executeQueryAsync(() => {
-                        webParts.get_data().forEach(wp => wp.deleteWebPart());
-                        ctx.executeQueryAsync(_resolve, _reject);
-                    }, _reject);
-                } else {
-                    _resolve();
-                }
-            })).then(() => {
+            this.removeExistingWebParts(webServerRelativeUrl, fileServerRelativeUrl, file.RemoveExistingWebParts).then(() => {
                 if (file.WebParts && file.WebParts.length > 0) {
                     let ctx = new SP.ClientContext(webServerRelativeUrl),
                         spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
