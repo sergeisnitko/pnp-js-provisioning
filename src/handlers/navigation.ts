@@ -29,7 +29,7 @@ export class Navigation extends HandlerBase {
                 promises.push(this.processNavTree(web.navigation.quicklaunch, navigation.QuickLaunch));
             }
             if (Util.isArray(navigation.TopNavigationBar)) {
-                promises.push(_ => this.processNavTree(web.navigation.topNavigationBar, navigation.TopNavigationBar));
+                promises.push(this.processNavTree(web.navigation.topNavigationBar, navigation.TopNavigationBar));
             }
             Promise.all(promises).then(() => {
                 super.scope_ended();
