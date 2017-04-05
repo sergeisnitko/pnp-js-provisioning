@@ -8,7 +8,7 @@ import { Web, List, Logger, LogLevel } from "sp-pnp-js";
  */
 export class Lists extends HandlerBase {
     private lists: any[];
-    private tokenRegex = /{[a-z]*:[ÆØÅæøåA-za-z]*}/g;
+    private tokenRegex = /{[a-z]*:[ÆØÅæøåA-za-z ]*}/g;
     /**
      * Creates a new instance of the Lists class
      */
