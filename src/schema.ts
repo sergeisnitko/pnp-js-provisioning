@@ -131,7 +131,7 @@ export interface IList {
 
 export interface IListInstanceFieldRef {
     ID: string;
-    DisplayName: string;
+    DisplayName?: string;
     Required?: boolean;
 }
 
