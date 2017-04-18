@@ -1,6 +1,6 @@
 import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
-import { IList, IContentTypeBinding, IListView } from "../schema";
+import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView } from '../schema';
 import { Web, List, Logger, LogLevel } from "sp-pnp-js";
 
 /**
@@ -27,9 +27,11 @@ export class Lists extends HandlerBase {
         return new Promise<void>((resolve, reject) => {
             lists.reduce((chain, list) => chain.then(_ => this.processList(web, list)), Promise.resolve()).then(() => {
                 lists.reduce((chain, list) => chain.then(_ => this.processFields(web, list)), Promise.resolve()).then(() => {
-                    lists.reduce((chain, list) => chain.then(_ => this.processViews(web, list)), Promise.resolve()).then(() => {
-                        super.scope_ended();
-                        resolve();
+                    lists.reduce((chain, list) => chain.then(_ => this.processFieldRefs(web, list)), Promise.resolve()).then(() => {
+                        lists.reduce((chain, list) => chain.then(_ => this.processViews(web, list)), Promise.resolve()).then(() => {
+                            super.scope_ended();
+                            resolve();
+                        });
                     });
                 });
             }).catch(e => {
@@ -145,6 +147,38 @@ export class Lists extends HandlerBase {
                     resolve();
                 }, reject);
             });
+        });
+    }
+
+    /**
+   * Processes field refs for a list
+   * 
+   * @param web The web
+   * @param list The pnp list
+   */
+    private processFieldRefs(web: Web, list: IList): Promise<any> {
+        return new Promise<void>((resolve, reject) => {
+            if (list.Fields) {
+                list.FieldRefs.reduce((chain, fieldRef) => chain.then(_ => this.processFieldRef(web, list, fieldRef)), Promise.resolve()).then(resolve, reject);
+            } else {
+                resolve();
+            }
+        });
+    }
+
+    /**
+     * Processes a field ref for a lit
+     * 
+     * @param web The web
+     * @param conf The list configuration
+     * @param fieldRef The list field ref
+     */
+    private processFieldRef(web: Web, conf: IList, fieldRef: IListInstanceFieldRef): Promise<any> {
+        return new Promise<void>((resolve, reject) => {
+            web.lists.getByTitle(conf.Title).fields.getById(fieldRef.ID).update({ Title: fieldRef.DisplayName }).then(() => {
+                Logger.log({ data: fieldRef, level: LogLevel.Info, message: `Field '${fieldRef.ID}' updated with Title '${fieldRef.DisplayName}' for list ${conf.Title}.` });
+                resolve();
+            }, reject);
         });
     }
 

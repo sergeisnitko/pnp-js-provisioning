@@ -93,6 +93,7 @@ export interface IList {
     RemoveExistingContentTypes?: boolean;
     ContentTypeBindings?: IContentTypeBinding[];
     Fields?: string[];
+    FieldRefs?: IListInstanceFieldRef[];
     Views?: IListView[];
 
     AdditionalSettings?: {
@@ -126,6 +127,11 @@ export interface IList {
 
         [key: string]: string | boolean | number;
     };
+}
+
+export interface IListInstanceFieldRef {
+    ID: string;
+    DisplayName: string;
 }
 
 export interface IContentTypeBinding {

@@ -1,5 +1,5 @@
 import { HandlerBase } from "./handlerbase";
-import { IList } from "../schema";
+import { IList } from '../schema';
 import { Web } from "sp-pnp-js";
 /**
  * Describes the Lists Object Handler
@@ -56,6 +56,21 @@ export declare class Lists extends HandlerBase {
      * @param fieldXml Field xml
      */
     private processField(web, conf, fieldXml);
+    /**
+   * Processes field refs for a list
+   *
+   * @param web The web
+   * @param list The pnp list
+   */
+    private processFieldRefs(web, list);
+    /**
+     * Processes a field ref for a lit
+     *
+     * @param web The web
+     * @param conf The list configuration
+     * @param fieldRef The list field ref
+     */
+    private processFieldRef(web, conf, fieldRef);
     /**
      * Processes views for a list
      *

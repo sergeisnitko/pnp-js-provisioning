@@ -81,6 +81,7 @@ export interface IList {
     RemoveExistingContentTypes?: boolean;
     ContentTypeBindings?: IContentTypeBinding[];
     Fields?: string[];
+    FieldRefs?: IListInstanceFieldRef[];
     Views?: IListView[];
     AdditionalSettings?: {
         DefaultContentApprovalWorkflowId?: string;
@@ -112,6 +113,10 @@ export interface IList {
         ValidationMessage?: string;
         [key: string]: string | boolean | number;
     };
+}
+export interface IListInstanceFieldRef {
+    ID: string;
+    DisplayName: string;
 }
 export interface IContentTypeBinding {
     ContentTypeID: string;
