@@ -132,6 +132,7 @@ export interface IList {
 export interface IListInstanceFieldRef {
     ID: string;
     DisplayName: string;
+    Required?: boolean;
 }
 
 export interface IContentTypeBinding {

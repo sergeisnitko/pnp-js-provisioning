@@ -6,7 +6,7 @@
   "typings": "./lib/provisioning",
   "dependencies": {
     "object.omit": "^2.0.1",
-    "sp-pnp-js": "git+https://github.com/SharePoint/PnP-JS-Core#dev",
+    "sp-pnp-js": "latest",
     "xml-js": "^1.0.2"
   },
   "devDependencies": {

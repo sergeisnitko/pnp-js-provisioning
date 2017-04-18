@@ -175,7 +175,7 @@ export class Lists extends HandlerBase {
      */
     private processFieldRef(web: Web, conf: IList, fieldRef: IListInstanceFieldRef): Promise<any> {
         return new Promise<void>((resolve, reject) => {
-            web.lists.getByTitle(conf.Title).fields.getById(fieldRef.ID).update({ Title: fieldRef.DisplayName }).then(() => {
+            web.lists.getByTitle(conf.Title).fields.getById(fieldRef.ID).update({ Required: fieldRef.Required, Title: fieldRef.DisplayName }).then(() => {
                 Logger.log({ data: fieldRef, level: LogLevel.Info, message: `Field '${fieldRef.ID}' updated with Title '${fieldRef.DisplayName}' for list ${conf.Title}.` });
                 resolve();
             }, reject);
