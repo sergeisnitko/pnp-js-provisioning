@@ -1,5 +1,5 @@
 import { HandlerBase } from "./handlerbase";
-import { IList } from '../schema';
+import { IList } from "../schema";
 import { Web } from "sp-pnp-js";
 /**
  * Describes the Lists Object Handler

@@ -1,6 +1,6 @@
 import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
-import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView } from '../schema';
+import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView } from "../schema";
 import { Web, List, Logger, LogLevel } from "sp-pnp-js";
 
 /**
@@ -158,7 +158,7 @@ export class Lists extends HandlerBase {
    */
     private processFieldRefs(web: Web, list: IList): Promise<any> {
         return new Promise<void>((resolve, reject) => {
-            if (list.Fields) {
+            if (list.FieldRefs) {
                 list.FieldRefs.reduce((chain, fieldRef) => chain.then(_ => this.processFieldRef(web, list, fieldRef)), Promise.resolve()).then(resolve, reject);
             } else {
                 resolve();
