@@ -64,7 +64,7 @@ export declare class Lists extends HandlerBase {
    */
     private processFieldRefs(web, list);
     /**
-     * Processes a field ref for a lit
+     * Processes a field ref for a list
      *
      * @param web The web
      * @param conf The list configuration

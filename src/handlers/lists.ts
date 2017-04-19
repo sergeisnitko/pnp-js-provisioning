@@ -167,7 +167,7 @@ export class Lists extends HandlerBase {
     }
 
     /**
-     * Processes a field ref for a lit
+     * Processes a field ref for a list
      * 
      * @param web The web
      * @param conf The list configuration
@@ -175,8 +175,8 @@ export class Lists extends HandlerBase {
      */
     private processFieldRef(web: Web, conf: IList, fieldRef: IListInstanceFieldRef): Promise<any> {
         return new Promise<void>((resolve, reject) => {
-            web.lists.getByTitle(conf.Title).fields.getById(fieldRef.ID).update({ Required: fieldRef.Required, Title: fieldRef.DisplayName }).then(() => {
-                Logger.log({ data: fieldRef, level: LogLevel.Info, message: `Field '${fieldRef.ID}' updated with Title '${fieldRef.DisplayName}' for list ${conf.Title}.` });
+            web.lists.getByTitle(conf.Title).fields.getById(fieldRef.ID).update({ Hidden: fieldRef.Hidden, Required: fieldRef.Required, Title: fieldRef.DisplayName }).then(() => {
+                Logger.log({ data: fieldRef, level: LogLevel.Info, message: `Field '${fieldRef.ID}' updated for list ${conf.Title}.` });
                 resolve();
             }, reject);
         });

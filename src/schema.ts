@@ -133,6 +133,7 @@ export interface IListInstanceFieldRef {
     ID: string;
     DisplayName?: string;
     Required?: boolean;
+    Hidden?: boolean;
 }
 
 export interface IContentTypeBinding {
