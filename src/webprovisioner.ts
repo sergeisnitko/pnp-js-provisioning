@@ -42,7 +42,7 @@ export class WebProvisioner {
                 if (progressCallback) {
                     progressCallback(name);
                 }
-                handler.ProvisionObjects(this.web, template[name]);
+                return handler.ProvisionObjects(this.web, template[name]);
             });
         }, Promise.resolve()).then(_ => {
             Logger.write(`Done processing of web [${this.web.toUrl()}]`, LogLevel.Info);
