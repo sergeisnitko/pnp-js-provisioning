@@ -133,6 +133,7 @@ export interface IListView {
         RowLimit?: number;
         Paged?: boolean;
         Hidden?: boolean;
+        Scope?: 0 | 1;
     };
 }
 export interface IPropertyBagEntry {
