@@ -114,6 +114,7 @@ export interface IPropertyBagEntry {
     Value: string;
     Indexed?: boolean;
     Overwrite?: boolean;
+}
 
 export interface IContentTypeBinding {
     ContentTypeID: string;
