@@ -209,7 +209,9 @@ export class Lists extends HandlerBase {
         return new Promise<void>((resolve, reject) => {
             let _view = web.lists.getByTitle(conf.Title).views.getByTitle(view.Title);
             _view.get().then(_ => {
-                this.processViewFields(_view, view.ViewFields).then(resolve, reject);
+                _view.update(view.AdditionalSettings).then(() => {
+                    this.processViewFields(_view, view.ViewFields).then(resolve, reject);
+                });
             }, () => {
                 web.lists.getByTitle(conf.Title).views.add(view.Title, view.PersonalView, view.AdditionalSettings).then(result => {
                     Logger.log({ data: result.data, level: LogLevel.Info, message: `View ${view.Title} added successfully to list ${conf.Title}.` });
