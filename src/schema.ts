@@ -13,12 +13,6 @@ export interface Schema {
 
 export default Schema;
 
-export interface IPage {
-    Folder: string;
-    Url: string;
-    Fields?: { [key: string]: string };
-}
-
 export interface IFeature {
     id: string;
     deactivate: boolean;

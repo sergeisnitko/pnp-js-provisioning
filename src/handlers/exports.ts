@@ -9,7 +9,6 @@ import { Lists } from "./lists";
 import { Files } from "./files";
 import { PropertyBagEntries } from "./propertybagentries";
 
-
 export const DefaultHandlerMap: TypedHash<HandlerBase> = {
     ComposedLook: new ComposedLook(),
     CustomActions: new CustomActions(),
