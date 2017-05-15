@@ -61,6 +61,7 @@ export interface IWebSettings {
     RecycleBinEnabled?: boolean;
     TreeViewEnabled?: boolean;
     QuickLaunchEnabled?: boolean;
+    SiteLogoUrl?: string;
     [key: string]: string | boolean;
 }
 export interface INavigation {
