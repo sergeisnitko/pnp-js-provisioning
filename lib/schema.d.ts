@@ -74,6 +74,16 @@ export interface INavigationNode {
     IgnoreExisting?: boolean;
     Children?: INavigationNode[];
 }
+export interface RoleAssignment {
+    PrinciplalId: number;
+    RoleDefinitionId: number;
+}
+export interface IListSecurity {
+    BreakRoleInheritance?: boolean;
+    CopyRoleAssignments?: boolean;
+    ClearSubscopes?: boolean;
+    RoleAssignments?: RoleAssignment[];
+}
 export interface IList {
     Title: string;
     Description: string;
@@ -84,6 +94,7 @@ export interface IList {
     Fields?: string[];
     FieldRefs?: IListInstanceFieldRef[];
     Views?: IListView[];
+    Security?: IListSecurity;
     AdditionalSettings?: {
         DefaultContentApprovalWorkflowId?: string;
         DefaultDisplayFormUrl?: string;
