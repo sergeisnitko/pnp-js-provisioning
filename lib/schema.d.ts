@@ -74,15 +74,15 @@ export interface INavigationNode {
     IgnoreExisting?: boolean;
     Children?: INavigationNode[];
 }
-export interface RoleAssignment {
-    PrinciplalId: number;
-    RoleDefinitionId: number;
+export interface IRoleAssignment {
+    Principal: string;
+    RoleDefinition: string;
 }
 export interface IListSecurity {
     BreakRoleInheritance?: boolean;
     CopyRoleAssignments?: boolean;
     ClearSubscopes?: boolean;
-    RoleAssignments?: RoleAssignment[];
+    RoleAssignments?: IRoleAssignment[];
 }
 export interface IList {
     Title: string;

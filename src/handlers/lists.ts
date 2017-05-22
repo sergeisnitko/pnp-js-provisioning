@@ -1,6 +1,6 @@
 import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
-import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView } from "../schema";
+import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView, IRoleAssignment } from "../schema";
 import { Web, List, Logger, LogLevel } from "sp-pnp-js";
 
 /**
@@ -72,8 +72,7 @@ export class Lists extends HandlerBase {
             if (conf.Security) {
                 if (conf.Security.BreakRoleInheritance) {
                     list.breakRoleInheritance(conf.Security.CopyRoleAssignments, conf.Security.ClearSubscopes).then(() => {
-                        conf.Security.RoleAssignments.reduce((chain, roleAss) => chain.then(_ => list.roleAssignments.add(roleAss.PrinciplalId, roleAss
-                            .RoleDefinitionId)), Promise.resolve())
+                        conf.Security.RoleAssignments.reduce((chain, roleAss) => chain.then(_ => this.processRoleAssignment(list, roleAss)), Promise.resolve())
                             .then(resolve, reject);
                     }, reject);
                 } else {
@@ -82,6 +81,18 @@ export class Lists extends HandlerBase {
             } else {
                 resolve();
             }
+        });
+    }
+
+    /**
+     * Processes security for a list
+     * 
+     * @param list The pnp list
+     * @param roleAssignment Role assignment
+     */
+    private processRoleAssignment(list: List, roleAssignment: IRoleAssignment): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            resolve();
         });
     }
 
