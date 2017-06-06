@@ -54,45 +54,8 @@ export class Lists extends HandlerBase {
                 if (created) {
                     Logger.log({ data: list, level: LogLevel.Info, message: `List ${conf.Title} created successfully.` });
                 }
-                this.processSecurity(conf, list).then(_ => {
-                    this.processContentTypeBindings(conf, list, conf.ContentTypeBindings, conf.RemoveExistingContentTypes).then(resolve, reject);
-                }, reject);
+                this.processContentTypeBindings(conf, list, conf.ContentTypeBindings, conf.RemoveExistingContentTypes).then(resolve, reject);
             });
-        });
-    }
-
-    /**
-    * Processes security for a list
-    * 
-    * @param conf The list configuration
-    * @param list The pnp list
-    */
-    private processSecurity(conf: IList, list: List): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            if (conf.Security) {
-                if (conf.Security.BreakRoleInheritance) {
-                    list.breakRoleInheritance(conf.Security.CopyRoleAssignments, conf.Security.ClearSubscopes).then(() => {
-                        conf.Security.RoleAssignments.reduce((chain, roleAss) => chain.then(_ => this.processRoleAssignment(list, roleAss)), Promise.resolve())
-                            .then(resolve, reject);
-                    }, reject);
-                } else {
-                    resolve();
-                }
-            } else {
-                resolve();
-            }
-        });
-    }
-
-    /**
-     * Processes security for a list
-     * 
-     * @param list The pnp list
-     * @param roleAssignment Role assignment
-     */
-    private processRoleAssignment(list: List, roleAssignment: IRoleAssignment): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            resolve();
         });
     }
 
