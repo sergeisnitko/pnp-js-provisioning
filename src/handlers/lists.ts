@@ -1,6 +1,6 @@
 import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
-import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView } from "../schema";
+import { IContentTypeBinding, IList, IListInstanceFieldRef, IListView, IRoleAssignment } from "../schema";
 import { Web, List, Logger, LogLevel } from "sp-pnp-js";
 
 /**

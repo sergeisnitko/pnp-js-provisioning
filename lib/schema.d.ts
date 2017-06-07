@@ -61,6 +61,7 @@ export interface IWebSettings {
     RecycleBinEnabled?: boolean;
     TreeViewEnabled?: boolean;
     QuickLaunchEnabled?: boolean;
+    SiteLogoUrl?: string;
     [key: string]: string | boolean;
 }
 export interface INavigation {
@@ -73,6 +74,16 @@ export interface INavigationNode {
     IgnoreExisting?: boolean;
     Children?: INavigationNode[];
 }
+export interface IRoleAssignment {
+    Principal: string;
+    RoleDefinition: string;
+}
+export interface IListSecurity {
+    BreakRoleInheritance?: boolean;
+    CopyRoleAssignments?: boolean;
+    ClearSubscopes?: boolean;
+    RoleAssignments?: IRoleAssignment[];
+}
 export interface IList {
     Title: string;
     Description: string;
@@ -83,6 +94,7 @@ export interface IList {
     Fields?: string[];
     FieldRefs?: IListInstanceFieldRef[];
     Views?: IListView[];
+    Security?: IListSecurity;
     AdditionalSettings?: {
         DefaultContentApprovalWorkflowId?: string;
         DefaultDisplayFormUrl?: string;

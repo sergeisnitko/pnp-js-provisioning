@@ -25,6 +25,20 @@ export declare class Lists extends HandlerBase {
      */
     private processList(web, conf);
     /**
+    * Processes security for a list
+    *
+    * @param conf The list configuration
+    * @param list The pnp list
+    */
+    private processSecurity(conf, list);
+    /**
+     * Processes security for a list
+     *
+     * @param list The pnp list
+     * @param roleAssignment Role assignment
+     */
+    private processRoleAssignment(list, roleAssignment);
+    /**
      * Processes content type bindings for a list
      *
      * @param conf The list configuration

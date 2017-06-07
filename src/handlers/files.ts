@@ -51,7 +51,7 @@ export class Files extends HandlerBase {
                     let blob = new Blob([responseText], {
                         type: "text/plain",
                     });
-                    let folderServerRelativeUrl = Util.combinePaths("", serverRelativeUrl, file.Folder);
+                    let folderServerRelativeUrl = Util.combinePaths("/", serverRelativeUrl, file.Folder);
                     web.getFolderByServerRelativeUrl(folderServerRelativeUrl).files.add(file.Url, blob, file.Overwrite).then(result => {
                         Promise.all([
                             this.processWebParts(file, serverRelativeUrl, result.data.ServerRelativeUrl),
