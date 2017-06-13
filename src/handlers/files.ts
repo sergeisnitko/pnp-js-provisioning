@@ -1,6 +1,7 @@
+import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
 import { IFile, IWebPart, IListView } from "../schema";
-import { Web, Util, FileAddResult } from "sp-pnp-js";
+import { Web, Util, FileAddResult, Logger, LogLevel } from "sp-pnp-js";
 import { ReplaceTokens } from "../util";
 
 /**
@@ -46,6 +47,7 @@ export class Files extends HandlerBase {
      */
     private processFile(web: Web, file: IFile, serverRelativeUrl: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
+            Logger.log({ data: file, level: LogLevel.Info, message: `Processing file ${file.Folder}/${file.Url}` });
             fetch(ReplaceTokens(file.Src), { credentials: "include", method: "GET" }).then(res => {
                 res.text().then(responseText => {
                     let blob = new Blob([responseText], {
@@ -99,24 +101,115 @@ export class Files extends HandlerBase {
      */
     private processWebParts(file: IFile, webServerRelativeUrl: string, fileServerRelativeUrl: string) {
         return new Promise((resolve, reject) => {
+            Logger.log({ data: file.WebParts, level: LogLevel.Info, message: `Processing webparts for file ${file.Folder}/${file.Url}` });
             this.removeExistingWebParts(webServerRelativeUrl, fileServerRelativeUrl, file.RemoveExistingWebParts).then(() => {
                 if (file.WebParts && file.WebParts.length > 0) {
                     let ctx = new SP.ClientContext(webServerRelativeUrl),
                         spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
                         lwpm = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
-                    file.WebParts.forEach(wp => {
-                        let def = lwpm.importWebPart(this.replaceXmlTokens(wp.Contents.Xml, ctx)),
-                            inst = def.get_webPart();
-                        lwpm.addWebPart(inst, wp.Zone, wp.Order);
-                        ctx.load(inst);
-                    });
-                    ctx.executeQueryAsync(resolve, reject);
+                    this.fetchWebPartContents(file.WebParts, (index, xml) => {
+                        file.WebParts[index].Contents.Xml = xml;
+                    })
+                        .then(() => {
+                            file.WebParts.forEach(wp => {
+                                let def = lwpm.importWebPart(this.replaceXmlTokens(wp.Contents.Xml, ctx)),
+                                    inst = def.get_webPart();
+                                Logger.log({ data: wp, level: LogLevel.Info, message: `Processing webpart ${wp.Title} for file ${file.Folder}/${file.Url}` });
+                                lwpm.addWebPart(inst, wp.Zone, wp.Order);
+                                ctx.load(inst);
+                            });
+                            ctx.executeQueryAsync(resolve, (sender, args) => {
+                                Logger.log({
+                                    data: { error: args.get_message() },
+                                    level: LogLevel.Error,
+                                    message: `Failed to process webparts for file ${file.Folder}/${file.Url}`,
+                                });
+                                reject({ sender, args });
+                            });
+                        })
+                        .catch(reject);
                 } else {
                     resolve();
                 }
             }, reject);
         });
     }
+
+    /**
+     * Fetches web part contents
+     * 
+     * @param webParts Web parts
+     * @param cb Callback function that takes index of the the webpart and the retrieved XML
+     */
+    private fetchWebPartContents = (webParts: IWebPart[], cb: (index, xml) => void) => new Promise<any>((resolve, reject) => {
+        let fileFetchPromises = webParts.map((wp, index) => {
+            return (() => {
+                return new Promise<any>((_res, _rej) => {
+                    if (wp.Contents.FileSrc) {
+                        const fileSrc = ReplaceTokens(wp.Contents.FileSrc);
+                        Logger.log({ data: null, level: LogLevel.Info, message: `Retrieving contents from file '${fileSrc}'.` });
+                        fetch(fileSrc, { credentials: "include", method: "GET" })
+                            .then(res => {
+                                res.text()
+                                    .then(xml => {
+                                        if (Util.isArray(wp.PropertyOverrides)) {
+                                            let obj = xmljs.xml2js(xml);
+                                            if (obj.elements[0].name === "webParts") {
+                                                const existingProperties = obj.elements[0].elements[0].elements[1].elements[0].elements;
+                                                let updatedProperties = [];
+                                                existingProperties.forEach(prop => {
+                                                    let hasOverride = wp.PropertyOverrides.filter(po => po.name === prop.attributes.name).length > 0;
+                                                    if (!hasOverride) {
+                                                        updatedProperties.push(prop);
+                                                    }
+                                                });
+                                                wp.PropertyOverrides.forEach(({ name, type, value }) => {
+                                                    updatedProperties.push({
+                                                        attributes: {
+                                                            name,
+                                                            type,
+                                                        },
+                                                        elements: [
+                                                            {
+                                                                text: value,
+                                                                type: "text",
+                                                            },
+                                                        ],
+                                                        name: "property",
+                                                        type: "element",
+                                                    });
+                                                });
+                                                obj.elements[0].elements[0].elements[1].elements[0].elements = updatedProperties;
+                                                cb(index, xmljs.js2xml(obj));
+                                                _res();
+                                            } else {
+                                                cb(index, xml);
+                                                _res();
+                                            }
+                                        } else {
+                                            cb(index, xml);
+                                            _res();
+                                        }
+                                    })
+                                    .catch(err => {
+                                        Logger.log({ data: err, level: LogLevel.Error, message: `Failed to retrieve contents from file '${fileSrc}'.` });
+                                        reject(err);
+                                    });
+                            })
+                            .catch(err => {
+                                Logger.log({ data: err, level: LogLevel.Error, message: `Failed to retrieve contents from file '${fileSrc}'.` });
+                                reject(err);
+                            });
+                    } else {
+                        _res();
+                    }
+                });
+            })();
+        });
+        Promise.all(fileFetchPromises)
+            .then(resolve)
+            .catch(reject);
+    });
 
     private processPageListViews(web: Web, webParts: IWebPart[], fileServerRelativeUrl: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {

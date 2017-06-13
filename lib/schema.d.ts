@@ -26,18 +26,25 @@ export interface IFile {
         [key: string]: string | number;
     };
 }
+export interface IWebPartPropertyOverride {
+    name: string;
+    type: string;
+    value: string;
+}
 export interface IWebPart {
     Title: string;
     Zone: string;
     Order: number;
     Contents: IWebPartContents;
+    PropertyOverrides?: IWebPartPropertyOverride[];
     ListView?: {
         List: string;
         View: IListView;
     };
 }
 export interface IWebPartContents {
-    Xml: string;
+    Xml?: string;
+    FileSrc?: string;
 }
 export interface IComposedLook {
     ColorPaletteUrl: string;
