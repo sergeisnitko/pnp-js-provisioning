@@ -2,17 +2,17 @@ import { HandlerBase } from "./handlerbase";
 import { INavigation } from "../schema";
 import { Web } from "sp-pnp-js";
 /**
- * Describes the Features Object Handler
+ * Describes the Navigation Object Handler
  */
 export declare class Navigation extends HandlerBase {
     /**
-     * Creates a new instance of the ObjectFeatures class
+     * Creates a new instance of the Navigation class
      */
     constructor();
     /**
-     * Provisioning features
+     * Provisioning navigation
      *
-     * @paramm features The features to provision
+     * @paramm navigation The navigation to provision
      */
     ProvisionObjects(web: Web, navigation: INavigation): Promise<void>;
     private processNavTree(target, nodes);

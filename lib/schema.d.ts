@@ -37,7 +37,8 @@ export interface IWebPart {
     };
 }
 export interface IWebPartContents {
-    Xml: string;
+    Xml?: string;
+    FileSrc?: string;
 }
 export interface IComposedLook {
     ColorPaletteUrl: string;

@@ -39,6 +39,13 @@ export declare class Files extends HandlerBase {
      * @param fileServerRelativeUrl ServerRelativeUrl for the file
      */
     private processWebParts(file, webServerRelativeUrl, fileServerRelativeUrl);
+    /**
+     * Fetches web part files
+     *
+     * @param webParts Web parts
+     * @param cb Callback function that takes index of the the webpart and the retrieved XML
+     */
+    private fetchWebPartFiles;
     private processPageListViews(web, webParts, fileServerRelativeUrl);
     private processPageListView(web, listView, fileServerRelativeUrl);
     /**
