@@ -1,3 +1,4 @@
+import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
 import { IFile, IWebPart, IListView } from "../schema";
 import { Web, Util, FileAddResult, Logger, LogLevel } from "sp-pnp-js";
@@ -106,17 +107,25 @@ export class Files extends HandlerBase {
                     let ctx = new SP.ClientContext(webServerRelativeUrl),
                         spFile = ctx.get_web().getFileByServerRelativeUrl(fileServerRelativeUrl),
                         lwpm = spFile.getLimitedWebPartManager(SP.WebParts.PersonalizationScope.shared);
-                    this.fetchWebPartFiles(file.WebParts, (index, xml) => {
+                    this.fetchWebPartContents(file.WebParts, (index, xml) => {
                         file.WebParts[index].Contents.Xml = xml;
                     })
                         .then(() => {
                             file.WebParts.forEach(wp => {
                                 let def = lwpm.importWebPart(this.replaceXmlTokens(wp.Contents.Xml, ctx)),
                                     inst = def.get_webPart();
+                                Logger.log({ data: wp, level: LogLevel.Info, message: `Processing webpart ${wp.Title} for file ${file.Folder}/${file.Url}` });
                                 lwpm.addWebPart(inst, wp.Zone, wp.Order);
                                 ctx.load(inst);
                             });
-                            ctx.executeQueryAsync(resolve, reject);
+                            ctx.executeQueryAsync(resolve, (sender, args) => {
+                                Logger.log({
+                                    data: { error: args.get_message() },
+                                    level: LogLevel.Error,
+                                    message: `Failed to process webparts for file ${file.Folder}/${file.Url}`,
+                                });
+                                reject({ sender, args });
+                            });
                         })
                         .catch(reject);
                 } else {
@@ -127,29 +136,73 @@ export class Files extends HandlerBase {
     }
 
     /**
-     * Fetches web part files
+     * Fetches web part contents
      * 
      * @param webParts Web parts
      * @param cb Callback function that takes index of the the webpart and the retrieved XML
      */
-    private fetchWebPartFiles = (webParts: IWebPart[], cb: (index, xml) => void) => new Promise<any>((resolve, reject) => {
-        let fileFetchPromises = webParts.filter(wp => wp.Contents.FileSrc).map((wp, index) => {
+    private fetchWebPartContents = (webParts: IWebPart[], cb: (index, xml) => void) => new Promise<any>((resolve, reject) => {
+        let fileFetchPromises = webParts.map((wp, index) => {
             return (() => {
                 return new Promise<any>((_res, _rej) => {
-                    fetch(ReplaceTokens(wp.Contents.FileSrc), { credentials: "include", method: "GET" })
-                        .then(res => {
-                            res.text()
-                                .then(text => {
-                                    cb(index, text);
-                                    _res();
-                                })
-                                .catch(err => {
-                                    reject(err);
-                                });
-                        })
-                        .catch(err => {
-                            reject(err);
-                        });
+                    if (wp.Contents.FileSrc) {
+                        const fileSrc = ReplaceTokens(wp.Contents.FileSrc);
+                        Logger.log({ data: null, level: LogLevel.Info, message: `Retrieving contents from file '${fileSrc}'.` });
+                        fetch(fileSrc, { credentials: "include", method: "GET" })
+                            .then(res => {
+                                res.text()
+                                    .then(xml => {
+                                        if (Util.isArray(wp.PropertyOverrides)) {
+                                            let obj = xmljs.xml2js(xml);
+                                            if (obj.elements[0].name === "webParts") {
+                                                const existingProperties = obj.elements[0].elements[0].elements[1].elements[0].elements;
+                                                let updatedProperties = [];
+                                                existingProperties.forEach(prop => {
+                                                    let hasOverride = wp.PropertyOverrides.filter(po => po.name === prop.attributes.name).length > 0;
+                                                    if (!hasOverride) {
+                                                        updatedProperties.push(prop);
+                                                    }
+                                                });
+                                                wp.PropertyOverrides.forEach(({ name, type, value }) => {
+                                                    updatedProperties.push({
+                                                        attributes: {
+                                                            name,
+                                                            type,
+                                                        },
+                                                        elements: [
+                                                            {
+                                                                text: value,
+                                                                type: "text",
+                                                            },
+                                                        ],
+                                                        name: "property",
+                                                        type: "element",
+                                                    });
+                                                });
+                                                obj.elements[0].elements[0].elements[1].elements[0].elements = updatedProperties;
+                                                cb(index, xmljs.js2xml(obj));
+                                                _res();
+                                            } else {
+                                                cb(index, xml);
+                                                _res();
+                                            }
+                                        } else {
+                                            cb(index, xml);
+                                            _res();
+                                        }
+                                    })
+                                    .catch(err => {
+                                        Logger.log({ data: err, level: LogLevel.Error, message: `Failed to retrieve contents from file '${fileSrc}'.` });
+                                        reject(err);
+                                    });
+                            })
+                            .catch(err => {
+                                Logger.log({ data: err, level: LogLevel.Error, message: `Failed to retrieve contents from file '${fileSrc}'.` });
+                                reject(err);
+                            });
+                    } else {
+                        _res();
+                    }
                 });
             })();
         });
