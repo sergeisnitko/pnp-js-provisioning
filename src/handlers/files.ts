@@ -1,6 +1,6 @@
 import * as xmljs from "xml-js";
 import { HandlerBase } from "./handlerbase";
-import { IFile, IWebPart, IListView } from "../schema";
+import { IFile, IWebPart } from "../schema";
 import { Web, Util, FileAddResult, Logger, LogLevel } from "sp-pnp-js";
 import { ReplaceTokens } from "../util";
 
@@ -17,7 +17,7 @@ export class Files extends HandlerBase {
 
     /**
      * Provisioning Files
-     * 
+     *
      * @param {Web} web The web
      * @param {IFile[]} files The files  to provision
      */
@@ -41,10 +41,10 @@ export class Files extends HandlerBase {
 
     /**
      * Procceses a file
-     * 
+     *
      * @param {Web} web The web
      * @param {IFile} file The file
-     * @param {string} serverRelativeUrl ServerRelativeUrl for the web 
+     * @param {string} serverRelativeUrl ServerRelativeUrl for the web
      */
     private processFile(web: Web, file: IFile, serverRelativeUrl: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
@@ -82,8 +82,8 @@ export class Files extends HandlerBase {
 
     /**
      * Remove exisiting webparts if specified
-     * 
-     * @param {string} webServerRelativeUrl ServerRelativeUrl for the web 
+     *
+     * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
      * @param {boolean} shouldRemove Should web parts be removed
      */
@@ -117,9 +117,9 @@ export class Files extends HandlerBase {
 
     /**
      * Processes web parts
-     * 
+     *
      * @param {IFile} file The file
-     * @param {string} webServerRelativeUrl ServerRelativeUrl for the web 
+     * @param {string} webServerRelativeUrl ServerRelativeUrl for the web
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
      */
     private processWebParts(file: IFile, webServerRelativeUrl: string, fileServerRelativeUrl: string) {
@@ -160,7 +160,7 @@ export class Files extends HandlerBase {
 
     /**
      * Fetches web part contents
-     * 
+     *
      * @param {IWebPart[]} webParts Web parts
      * @param {Function} cb Callback function that takes index of the the webpart and the retrieved XML
      */
@@ -232,11 +232,11 @@ export class Files extends HandlerBase {
         Promise.all(fileFetchPromises)
             .then(resolve)
             .catch(reject);
-    });
+    })
 
     /**
      * Processes page list views
-     * 
+     *
      * @param {Web} web The web
      * @param {IWebPart[]} webParts Web parts
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
@@ -280,7 +280,7 @@ export class Files extends HandlerBase {
 
     /**
      * Processes page list view
-     * 
+     *
      * @param {Web} web The web
      * @param {any} listView List view
      * @param {string} fileServerRelativeUrl ServerRelativeUrl for the file
@@ -343,7 +343,7 @@ export class Files extends HandlerBase {
 
     /**
      * Process list item properties for the file
-     * 
+     *
      * @param {Web} web The web
      * @param {FileAddResuylt} result The file add result
      * @param {Object} properties The properties to set
@@ -366,7 +366,7 @@ export class Files extends HandlerBase {
 
     /**
      * Replaces tokens in a string, e.g. {site}
-     * 
+     *
      * @param {string} str The string
      * @param {SP.ClientContext} ctx Client context
      */

@@ -12,7 +12,7 @@ export declare class Navigation extends HandlerBase {
     /**
      * Provisioning navigation
      *
-     * @paramm navigation The navigation to provision
+     * @param {Navigation} navigation The navigation to provision
      */
     ProvisionObjects(web: Web, navigation: INavigation): Promise<void>;
     private processNavTree(target, nodes);

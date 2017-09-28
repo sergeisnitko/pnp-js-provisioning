@@ -16,8 +16,8 @@ export class Navigation extends HandlerBase {
 
     /**
      * Provisioning navigation
-     * 
-     * @paramm navigation The navigation to provision
+     *
+     * @param {Navigation} navigation The navigation to provision
      */
     public ProvisionObjects(web: Web, navigation: INavigation): Promise<void> {
 

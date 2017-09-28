@@ -6,6 +6,6 @@ const ReplaceTokens = (str: string): string => {
 
 const MakeUrlRelative = (absUrl: string): string => {
     return absUrl.replace(`${document.location.protocol}//${document.location.hostname}`, "");
-}
+};
 
 export { ReplaceTokens, MakeUrlRelative };

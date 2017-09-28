@@ -15,8 +15,9 @@ export class PropertyBagEntries extends HandlerBase {
 
     /**
      * Provisioning property bag entries
-     * 
-     * @paramm entries The property bag entries to provision
+     *
+     * @param {Web} web The web
+     * @param {Array<IPropertyBagEntry>} entries The property bag entries to provision
      */
     public ProvisionObjects(web: Web, entries: IPropertyBagEntry[]): Promise<void> {
         super.scope_started();
@@ -63,8 +64,8 @@ export class PropertyBagEntries extends HandlerBase {
 
     /**
      *Encode property key
-     * 
-     * @param propKey Property bag key
+     *
+     * @param {string} propKey Property bag key
      */
     private EncodePropertyKey(propKey: string): string {
         let bytes = [];
