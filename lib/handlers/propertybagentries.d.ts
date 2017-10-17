@@ -16,10 +16,4 @@ export declare class PropertyBagEntries extends HandlerBase {
      * @param {Array<IPropertyBagEntry>} entries The property bag entries to provision
      */
     ProvisionObjects(web: Web, entries: IPropertyBagEntry[]): Promise<void>;
-    /**
-     *Encode property key
-     *
-     * @param {string} propKey Property bag key
-     */
-    private EncodePropertyKey(propKey);
 }
