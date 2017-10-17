@@ -1,5 +1,6 @@
 import { HandlerBase } from "./handlerbase";
 import { IPropertyBagEntry } from "../schema";
+import * as Util from "../util";
 import { Web, Logger, LogLevel } from "sp-pnp-js";
 
 /**
@@ -34,7 +35,7 @@ export class PropertyBagEntries extends HandlerBase {
                 entries.filter(entry => entry.Overwrite).forEach(entry => {
                     propBag.set_item(entry.Key, entry.Value);
                     if (entry.Indexed) {
-                        idxProps.push(this.EncodePropertyKey(entry.Key));
+                        idxProps.push(Util.base64EncodeString(entry.Key));
                     }
                 });
                 spWeb.update();
@@ -60,20 +61,5 @@ export class PropertyBagEntries extends HandlerBase {
                 });
             });
         });
-    }
-
-    /**
-     *Encode property key
-     *
-     * @param {string} propKey Property bag key
-     */
-    private EncodePropertyKey(propKey: string): string {
-        let bytes = [];
-        for (let i = 0; i < propKey.length; ++i) {
-            bytes.push(propKey.charCodeAt(i));
-            bytes.push(0);
-        }
-        let b64encoded = window.btoa(String.fromCharCode.apply(null, bytes));
-        return b64encoded;
     }
 }
