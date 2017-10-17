@@ -20,9 +20,7 @@ export class Navigation extends HandlerBase {
      * @param {Navigation} navigation The navigation to provision
      */
     public ProvisionObjects(web: Web, navigation: INavigation): Promise<void> {
-
         super.scope_started();
-
         return new Promise<void>((resolve, reject) => {
             let promises = [];
             if (Util.isArray(navigation.QuickLaunch)) {

@@ -17,3 +17,7 @@ export function base64EncodeString(str: string): string {
     let b64encoded = window.btoa(String.fromCharCode.apply(null, bytes));
     return b64encoded;
 }
+
+export function isNode(): boolean {
+    return typeof window === "undefined";
+}
