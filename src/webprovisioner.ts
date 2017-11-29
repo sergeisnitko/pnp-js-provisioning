@@ -5,15 +5,15 @@ import { TypedHash, Web, Logger, LogLevel } from "sp-pnp-js";
 import { DefaultHandlerMap, DefaultHandlerSort } from "./handlers/exports";
 
 /**
- * Root class of Provisioning 
+ * Root class of Provisioning
  */
 export class WebProvisioner {
 
     /**
      * Creates a new instance of the Provisioner class
-     * 
-     * @param web The Web instance to which we want to apply templates
-     * @param handlermap A set of handlers we want to apply. The keys of the map need to match the property names in the template
+     *
+     * @param {Web} web The Web instance to which we want to apply templates
+     * @param {TypedHash<HandlerBase>} handlermap A set of handlers we want to apply. The keys of the map need to match the property names in the template
      */
     constructor(
         private web: Web,
@@ -22,9 +22,9 @@ export class WebProvisioner {
 
     /**
      * Applies the supplied template to the web used to create this Provisioner instance
-     * 
-     * @param template The template to apply
-     * @param progressCallback Callback for progress updates
+     *
+     * @param {Schema} template The template to apply
+     * @param {Function} progressCallback Callback for progress updates
      */
     public applyTemplate(template: Schema, progressCallback?: (msg: string) => void): Promise<void> {
 

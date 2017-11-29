@@ -14,61 +14,62 @@ export declare class Lists extends HandlerBase {
     /**
      * Provisioning lists
      *
-     * @param lists The lists to provision
+     * @param {Web} web The web
+     * @param {Array<IList>} lists The lists to provision
      */
     ProvisionObjects(web: Web, lists: IList[]): Promise<void>;
     /**
      * Processes a list
      *
-     * @param web The web
-     * @param list The list
+     * @param {Web} web The web
+     * @param {IList} list The list
      */
     private processList(web, conf);
     /**
      * Processes content type bindings for a list
      *
-     * @param conf The list configuration
-     * @param list The pnp list
-     * @param contentTypeBindings Content type bindings
-     * @param removeExisting Remove existing content type bindings
+     * @param {IList} conf The list configuration
+     * @param {List} list The pnp list
+     * @param {Array<IContentTypeBinding>} contentTypeBindings Content type bindings
+     * @param {boolean} removeExisting Remove existing content type bindings
      */
     private processContentTypeBindings(conf, list, contentTypeBindings, removeExisting);
     /**
      * Processes a content type binding for a list
      *
-     * @param conf The list configuration
-     * @param list The pnp list
-     * @param contentTypeID The Content Type ID
+     * @param {IList} conf The list configuration
+     * @param {List} list The pnp list
+     * @param {string} contentTypeID The Content Type ID
      */
     private processContentTypeBinding(conf, list, contentTypeID);
     /**
      * Processes fields for a list
      *
-     * @param web The web
-     * @param list The pnp list
+     * @param {Web} web The web
+     * @param {IList} list The pnp list
      */
     private processFields(web, list);
     /**
      * Processes a field for a lit
      *
-     * @param web The web
-     * @param conf The list configuration
-     * @param fieldXml Field xml
+     * @param {Web} web The web
+     * @param {IList} conf The list configuration
+     * @param {string} fieldXml Field xml
      */
     private processField(web, conf, fieldXml);
     /**
    * Processes field refs for a list
    *
-   * @param web The web
-   * @param list The pnp list
+   * @param {Web} web The web
+   * @param {IList} list The pnp list
    */
     private processFieldRefs(web, list);
     /**
      * Processes a field ref for a list
      *
-     * @param web The web
-     * @param conf The list configuration
-     * @param fieldRef The list field ref
+     * @param {Web} web The web
+     * @param {IList} conf The list configuration
+     * @param {IListInstanceFieldRef} fieldRef The list field ref
      */
     private processFieldRef(web, conf, fieldRef);
     /**
@@ -81,22 +82,22 @@ export declare class Lists extends HandlerBase {
     /**
      * Processes a view for a list
      *
-     * @param web The web
-     * @param conf List configuration
-     * @param view The view configuration
+     * @param {Web} web The web
+     * @param {IList} conf The list configuration
+     * @param {IListView} view The view configuration
      */
     private processView(web, conf, view);
     /**
      * Processes view fields for a view
      *
-     * @param view The pnp view
-     * @param viewFields Array of view fields
+     * @param {any} view The pnp view
+     * @param {Array<string>} viewFields Array of view fields
      */
     private processViewFields(view, viewFields);
     /**
      * Replaces tokens in field xml
      *
-     * @param fieldXml The field xml
+     * @param {string} fieldXml The field xml
      */
     private replaceFieldXmlTokens(fieldXml);
 }

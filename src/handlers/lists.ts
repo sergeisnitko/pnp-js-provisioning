@@ -19,8 +19,9 @@ export class Lists extends HandlerBase {
 
     /**
      * Provisioning lists
-     * 
-     * @param lists The lists to provision
+     *
+     * @param {Web} web The web
+     * @param {Array<IList>} lists The lists to provision
      */
     public ProvisionObjects(web: Web, lists: IList[]): Promise<void> {
         super.scope_started();
@@ -43,9 +44,9 @@ export class Lists extends HandlerBase {
 
     /**
      * Processes a list
-     * 
-     * @param web The web
-     * @param list The list
+     *
+     * @param {Web} web The web
+     * @param {IList} list The list
      */
     private processList(web: Web, conf: IList): Promise<void> {
         return new Promise<void>((resolve, reject) => {
@@ -61,11 +62,11 @@ export class Lists extends HandlerBase {
 
     /**
      * Processes content type bindings for a list
-     * 
-     * @param conf The list configuration
-     * @param list The pnp list
-     * @param contentTypeBindings Content type bindings 
-     * @param removeExisting Remove existing content type bindings
+     *
+     * @param {IList} conf The list configuration
+     * @param {List} list The pnp list
+     * @param {Array<IContentTypeBinding>} contentTypeBindings Content type bindings
+     * @param {boolean} removeExisting Remove existing content type bindings
      */
     private processContentTypeBindings(conf: IList, list: List, contentTypeBindings: IContentTypeBinding[], removeExisting: boolean): Promise<any> {
         return new Promise<any>((resolve, reject) => {
@@ -98,10 +99,10 @@ export class Lists extends HandlerBase {
 
     /**
      * Processes a content type binding for a list
-     * 
-     * @param conf The list configuration
-     * @param list The pnp list
-     * @param contentTypeID The Content Type ID  
+     *
+     * @param {IList} conf The list configuration
+     * @param {List} list The pnp list
+     * @param {string} contentTypeID The Content Type ID
      */
     private processContentTypeBinding(conf: IList, list: List, contentTypeID: string): Promise<any> {
         return new Promise<void>((resolve, reject) => {
@@ -115,9 +116,9 @@ export class Lists extends HandlerBase {
 
     /**
      * Processes fields for a list
-     * 
-     * @param web The web
-     * @param list The pnp list
+     *
+     * @param {Web} web The web
+     * @param {IList} list The pnp list
      */
     private processFields(web: Web, list: IList): Promise<any> {
         return new Promise<void>((resolve, reject) => {
@@ -131,10 +132,10 @@ export class Lists extends HandlerBase {
 
     /**
      * Processes a field for a lit
-     * 
-     * @param web The web
-     * @param conf The list configuration
-     * @param fieldXml Field xml
+     *
+     * @param {Web} web The web
+     * @param {IList} conf The list configuration
+     * @param {string} fieldXml Field xml
      */
     private processField(web: Web, conf: IList, fieldXml: string): Promise<any> {
         return new Promise<void>((resolve, reject) => {
@@ -152,9 +153,9 @@ export class Lists extends HandlerBase {
 
     /**
    * Processes field refs for a list
-   * 
-   * @param web The web
-   * @param list The pnp list
+   *
+   * @param {Web} web The web
+   * @param {IList} list The pnp list
    */
     private processFieldRefs(web: Web, list: IList): Promise<any> {
         return new Promise<void>((resolve, reject) => {
@@ -168,10 +169,10 @@ export class Lists extends HandlerBase {
 
     /**
      * Processes a field ref for a list
-     * 
-     * @param web The web
-     * @param conf The list configuration
-     * @param fieldRef The list field ref
+     *
+     * @param {Web} web The web
+     * @param {IList} conf The list configuration
+     * @param {IListInstanceFieldRef} fieldRef The list field ref
      */
     private processFieldRef(web: Web, conf: IList, fieldRef: IListInstanceFieldRef): Promise<any> {
         return new Promise<void>((resolve, reject) => {
@@ -184,7 +185,7 @@ export class Lists extends HandlerBase {
 
     /**
      * Processes views for a list
-     * 
+     *
      * @param web The web
      * @param conf The view configuration
      */
@@ -200,10 +201,10 @@ export class Lists extends HandlerBase {
 
     /**
      * Processes a view for a list
-     * 
-     * @param web The web
-     * @param conf List configuration
-     * @param view The view configuration
+     *
+     * @param {Web} web The web
+     * @param {IList} conf The list configuration
+     * @param {IListView} view The view configuration
      */
     private processView(web: Web, conf: IList, view: IListView): Promise<void> {
         return new Promise<void>((resolve, reject) => {
@@ -223,9 +224,9 @@ export class Lists extends HandlerBase {
 
     /**
      * Processes view fields for a view
-     * 
-     * @param view The pnp view
-     * @param viewFields Array of view fields
+     *
+     * @param {any} view The pnp view
+     * @param {Array<string>} viewFields Array of view fields
      */
     private processViewFields(view: any, viewFields: string[]): Promise<void> {
         return new Promise<void>((resolve, reject) => {
@@ -237,8 +238,8 @@ export class Lists extends HandlerBase {
 
     /**
      * Replaces tokens in field xml
-     * 
-     * @param fieldXml The field xml
+     *
+     * @param {string} fieldXml The field xml
      */
     private replaceFieldXmlTokens(fieldXml: string) {
         let m;

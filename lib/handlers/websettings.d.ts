@@ -12,8 +12,8 @@ export declare class WebSettings extends HandlerBase {
     /**
      * Provisioning WebSettings
      *
-     * @param web The web
-     * @param settings The settings
+     * @param {Web} web The web
+     * @param {IWebSettings} settings The settings
      */
     ProvisionObjects(web: Web, settings: IWebSettings): Promise<void>;
 }

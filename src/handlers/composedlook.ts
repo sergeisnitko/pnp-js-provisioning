@@ -16,8 +16,9 @@ export class ComposedLook extends HandlerBase {
 
     /**
      * Provisioning Composed Look
-     * 
-     * @param object The Composed Look to provision
+     *
+     * @param {Web} web The web
+     * @param {IComposedLook} object The Composed Look to provision
      */
     public ProvisionObjects(web: Web, composedLook: IComposedLook): Promise<void> {
         super.scope_started();

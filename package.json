@@ -6,7 +6,7 @@
   "typings": "./lib/provisioning",
   "dependencies": {
     "object.omit": "^3.0.0",
-    "sp-pnp-js": "^3.0.0",
+    "sp-pnp-js": "^2.0.8",
     "xml-js": "^1.4.2"
   },
   "devDependencies": {

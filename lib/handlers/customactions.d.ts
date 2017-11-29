@@ -12,7 +12,8 @@ export declare class CustomActions extends HandlerBase {
     /**
      * Provisioning Custom Actions
      *
-     * @param customactions The Custom Actions to provision
+     * @param {Web} web The web
+     * @param {Array<ICustomAction>} customactions The Custom Actions to provision
      */
     ProvisionObjects(web: Web, customActions: ICustomAction[]): Promise<void>;
 }

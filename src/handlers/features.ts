@@ -15,8 +15,9 @@ export class Features extends HandlerBase {
 
     /**
      * Provisioning features
-     * 
-     * @paramm features The features to provision
+     *
+     * @param {Web} web The web
+     * @param {Array<IFeature>} features The features to provision
      */
     public ProvisionObjects(web: Web, features: IFeature[]): Promise<void> {
         super.scope_started();

@@ -15,10 +15,10 @@ module.exports = [{
     },
     devtool: "source-map",
     resolve: {
-        extensions: ['', '.js']
+        extensions: ['.js']
     },
     plugins: [
-        new webpack.BannerPlugin(config.header, { entryOnly: true, raw: true })
+        new webpack.BannerPlugin(config.header)
     ],
     module: {
         loaders: [
@@ -39,16 +39,15 @@ module.exports = [{
     },
     devtool: "source-map",
     resolve: {
-        extensions: ['', '.js']
+        extensions: ['.js']
     },
     plugins: [
-        new webpack.BannerPlugin(config.header, { entryOnly: true, raw: true }),
+        new webpack.BannerPlugin(config.header),
         new webpack.DefinePlugin({
             "process.env": {
                 "NODE_ENV": JSON.stringify("production")
             }
         }),
-        new webpack.optimize.DedupePlugin(),
         new webpack.optimize.UglifyJsPlugin()
     ],
     module: {
