@@ -12,7 +12,6 @@ function getBanner() {
         " * docs: http://officedev.github.io/PnP-JS-Core",
         ` * source: ${pkg.homepage}`,
         ` * bugs: ${pkg.bugs.url}`,
-        " */"
     ].join("\n");
 }
 
