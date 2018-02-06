@@ -1,12 +1,12 @@
 {
   "name": "sp-pnp-provisioning",
-  "version": "0.0.2-beta.0",
+  "version": "0.8.0",
   "description": "A reusable JavaScript library targeting SharePoint provisioning.",
   "main": "./lib/provisioning.js",
   "typings": "./lib/provisioning",
   "dependencies": {
     "object.omit": "^3.0.0",
-    "sp-pnp-js": "^2.0.8",
+    "sp-pnp-js": "^3.0.4",
     "xml-js": "^1.4.2"
   },
   "devDependencies": {
